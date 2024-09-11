@@ -23,9 +23,14 @@ TODO power-ups:
 - freeze ball for N seconds (to adjust spin)
 - reset ball spin and velocity (add some art in the middle of the field, and when ball hits, trigger effect)
 
+IDEAS:
+- maybe a brickwall between the bats appear that then one player will have to knock a hole in to get ball over 
+  to other side (like a temporary block-breaker (Arkanoid))
+
 TODO thoughts:
 - perhaps reset surface speeds after each collision? will it make it harder or easier?
 - round spin/speeds to integer between 0-10? show that number somewhere (next to wall/bats?) so you can easily counter?
 - maybe hold key for spin, and releasing key resets it back to 0 spin
+- what other pong-like games are there that can be temporary features (triggered by power-ups?)
 */
 ```

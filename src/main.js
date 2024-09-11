@@ -29,7 +29,6 @@ class Game
 			keyboard[e.code] = false;
 		});
 		
-
 		
 		let paused = false;
 		this.frameCount = 0;
