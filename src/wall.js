@@ -3,7 +3,7 @@ import CONFIG from "./config.js";
 export default class Wall {
     constructor(app, x, y, width, controls) {
         this.app = app;
-        this.indicatorParticles = [];
+        this.spinIndicators = [];
         this.sprite = new PIXI.Graphics();
         this.sprite.beginFill(CONFIG.walls.color);
         this.sprite.drawRect(2, 0, width - 2, CONFIG.walls.height);
@@ -35,27 +35,26 @@ export default class Wall {
     
     initIndicator()
     {
-        const numParticles = 40;
+        const numIndicators = 40;
         
-        for (let i = 0; i < numParticles; i++) {
-            const particle = new PIXI.Graphics();
-            particle.beginFill(0x0000FF);
-            particle.drawCircle(0, 0, 3);
-            particle.endFill();
-            particle.x = this.sprite.x;
-            particle.y = this.sprite.y;
-            particle.angle = (i / numParticles) * (2 * Math.PI); // Spread particles evenly
-            this.indicatorParticles.push(particle);
-            this.app.stage.addChild(particle);
-            // this.sprite.addChild(particle);
+        for (let i = 0; i < numIndicators; i++) {
+            const indicator = new PIXI.Graphics();
+            indicator.beginFill(0x0000FF);
+            indicator.drawCircle(0, 0, 3);
+            indicator.endFill();
+            indicator.x = this.sprite.x;
+            indicator.y = this.sprite.y;
+            indicator.angle = (i / numIndicators) * (2 * Math.PI); // Spread indicators evenly
+            this.spinIndicators.push(indicator);
+            this.app.stage.addChild(indicator);
         }
     }
     
     updateIndicator() {
-        this.indicatorParticles.forEach(particle => {
-            particle.angle += this.sprite.y === 0 ? this.surfaceSpeed / 10 : -(this.surfaceSpeed / 10);
-            particle.x = this.sprite.x - (CONFIG.walls.width/2) + CONFIG.walls.width + (CONFIG.walls.width / 2 * Math.cos(particle.angle));
-            particle.y = this.sprite.y + CONFIG.walls.height + (CONFIG.walls.height / 2 * Math.sin(particle.angle));
+        this.spinIndicators.forEach(indicator => {
+            indicator.angle += this.sprite.y === 0 ? this.surfaceSpeed / 10 : -(this.surfaceSpeed / 10);
+            indicator.x = this.sprite.x - (CONFIG.walls.width/2) + CONFIG.walls.width + (CONFIG.walls.width / 2 * Math.cos(indicator.angle));
+            indicator.y = this.sprite.y + CONFIG.walls.height + (CONFIG.walls.height / 2 * Math.sin(indicator.angle));
         });
     }
 }

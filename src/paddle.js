@@ -16,7 +16,7 @@ export default class Paddle extends Eventable
         this.surfaceSpeed = 0;
         this.controls = controls;
         
-        this.indicatorParticles = [];
+        this.spinIndicators = [];
         
         this.initSurface();
         this.app.stage.addChild(this.sprite);
@@ -37,18 +37,18 @@ export default class Paddle extends Eventable
     
     initIndicator()
     {
-        const numParticles = 20;
+        const numIndicators = 20;
         
-        for (let i = 0; i < numParticles; i++) {
-            const particle = new PIXI.Graphics();
-            particle.beginFill(0x0000FF);
-            particle.drawCircle(0, 0, 3);
-            particle.endFill();
-            particle.x = this.sprite.x;
-            particle.y = this.sprite.y;
-            particle.angle = (i / numParticles) * (2 * Math.PI); // Spread particles evenly
-            this.indicatorParticles.push(particle);
-            this.app.stage.addChild(particle);
+        for (let i = 0; i < numIndicators; i++) {
+            const indicator = new PIXI.Graphics();
+            indicator.beginFill(0x0000FF);
+            indicator.drawCircle(0, 0, 3);
+            indicator.endFill();
+            indicator.x = this.sprite.x;
+            indicator.y = this.sprite.y;
+            indicator.angle = (i / numIndicators) * (2 * Math.PI); // Spread indicators evenly
+            this.spinIndicators.push(indicator);
+            this.app.stage.addChild(indicator);
         }
     }
     
@@ -104,10 +104,10 @@ export default class Paddle extends Eventable
     }
     
     updateIndicator() {
-        this.indicatorParticles.forEach(particle => {
-            particle.angle += this.surfaceSpeed;
-            particle.x = this.sprite.x + CONFIG.paddle.width / 2 + (CONFIG.paddle.width) * Math.cos(particle.angle);
-            particle.y = this.sprite.y + CONFIG.paddle.height / 2 + (CONFIG.paddle.height / 2 * 1.15) * Math.sin(particle.angle);
+        this.spinIndicators.forEach(indicator => {
+            indicator.angle += this.surfaceSpeed;
+            indicator.x = this.sprite.x + CONFIG.paddle.width / 2 + (CONFIG.paddle.width) * Math.cos(indicator.angle);
+            indicator.y = this.sprite.y + CONFIG.paddle.height / 2 + (CONFIG.paddle.height / 2 * 1.15) * Math.sin(indicator.angle);
         });
     }
 }
