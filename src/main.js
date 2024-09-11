@@ -9,9 +9,11 @@ class Game
 {
 	constructor() {
 		const app = new PIXI.Application(PIXICONFIG);
+		this.app = app;
 		document.body.appendChild(app.view);
 		
-		
+		this.initRevolt();
+
 		// Initialize keyboard
 		const keyboard = {};
 		window.addEventListener('keydown', (e) => {
@@ -109,6 +111,45 @@ class Game
 			this.updateDebugText();
 			this.frameCount++;
 		});
+	}
+
+	async initRevolt()
+	{
+        //Hack WebGL Add BlendMode
+        if (this.app.renderer.type == 1) {
+			console.log("blendmode hack");
+            this.app.renderer.state.blendModes[PIXI.BLEND_MODES.ADD] = [this.app.renderer.gl.ONE, this.app.renderer.gl.ONE];
+        }
+
+		//Create a RevoltFX instance
+		this.fx = new revolt.FX(); //loaded via the script tag
+
+		//Load the assets using PIXI Assets loader
+		PIXI.Assets.add({ alias: 'fx_settings', src: './libs/revoltfx/assets/default-bundle.json' });
+		PIXI.Assets.add({ alias: 'fx_spritesheet', src: './libs/revoltfx/assets/revoltfx-spritesheet.json' });
+		PIXI.Assets.add({ alias: 'example_spritesheet', src: './libs/revoltfx/assets/rfx-examples.json' });
+
+		await PIXI.Assets.load(['fx_settings', 'fx_spritesheet', 'example_spritesheet']).then((data) => {
+			//Init the bundle
+			console.log(data)
+			this.fx.initBundle(data.fx_settings);
+
+			this.app.ticker.add(() => {
+				//Update the RevoltFX instance
+				this.fx.update();
+			});
+		});
+
+		const container = new PIXI.Container();
+		this.app.stage.addChild(container);
+		
+		var emitter = this.fx.getParticleEmitter('fairy-dust', true, true);
+
+		emitter.settings.Min = 1;
+		emitter.settings.spawnCountMax = 4;
+		emitter.init(container, true, 1.1);
+		emitter.x = PIXICONFIG.width * 0.5;
+		emitter.y = PIXICONFIG.height * 0.5;
 	}
 
 	updateDebugText()

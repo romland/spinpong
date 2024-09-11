@@ -22,6 +22,7 @@ TODO power-ups:
 - freeze opponent wall
 - freeze ball for N seconds (to adjust spin)
 - reset ball spin and velocity (add some art in the middle of the field, and when ball hits, trigger effect)
+- magnets (attracts ball and/or paddles depending on placement)
 
 IDEAS:
 - maybe a brickwall between the bats appear that then one player will have to knock a hole in to get ball over 
