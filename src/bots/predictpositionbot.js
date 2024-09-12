@@ -8,7 +8,8 @@ export default class PredictPositionBot
 		this.paddle = paddle;
 		this.targetY = PIXICONFIG.height / 2;
 		this.lastUsedFrame = -1;		// Last frame we moved
-		ball.registerCallback("onPositionPredicted", (args) => this.onPositionPredicted(...args));
+		ball.registerListener("onPositionPredicted", (args) => this.onPositionPredicted(...args));
+		
 /*
 		this.usePredicted = false;		// Prevent us from calculate a move if nothing has changed.
 		ball.registerCallback("onCollision", (args) => this.onCollision(...args));

@@ -7,10 +7,22 @@ export default class Paddle extends Eventable
         super();
 
         this.app = app;
-        this.sprite = new PIXI.Graphics();
-        this.sprite.beginFill(CONFIG.paddle.color);
-        this.sprite.drawRect(0, 0, CONFIG.paddle.width, CONFIG.paddle.height);
-        this.sprite.endFill();
+
+
+        if(true) {
+            // bitmap
+            this.sprite = PIXI.Sprite.from('./assets/paddle03.png');
+            this.sprite.anchor.set(0,0);
+            this.sprite.width = CONFIG.paddle.width;
+            this.sprite.height = CONFIG.paddle.height;
+        } else {
+            // primitives
+            this.sprite = new PIXI.Graphics();
+            this.sprite.beginFill(CONFIG.paddle.color);
+            this.sprite.drawRect(0, 0, CONFIG.paddle.width, CONFIG.paddle.height);
+            this.sprite.endFill();
+        }
+
         this.sprite.x = x;
         this.sprite.y = y;
         this.surfaceSpeed = 0;
@@ -25,7 +37,7 @@ export default class Paddle extends Eventable
     
     initSurface() {
         this.surface = new PIXI.Graphics();
-        this.surface.beginFill(0x000000);
+        // this.surface.beginFill(0x000000);
         this.surface.drawRoundedRect(-1, 0, CONFIG.paddle.width + 5, CONFIG.paddle.height + 4, 5);
         this.surface.endFill();
         this.surface.position.set(this.sprite.x - 2, this.sprite.y - 2);
@@ -57,9 +69,7 @@ export default class Paddle extends Eventable
         this.sprite.x = x;
         this.sprite.y = y;
 
-        if(this.hasCallback("onMoved")) {
-            this.doCallbacks("onMoved", this, this.sprite.x, this.sprite.y);
-        }
+        this.notifyListeners("onMoved", this, this.sprite.x, this.sprite.y);
     }
 
     move(keyboard) {
@@ -98,8 +108,8 @@ export default class Paddle extends Eventable
         this.surface.position.set(this.sprite.x - 2, this.sprite.y - 2);
         this.updateIndicator();
 
-        if(moved && this.hasCallback("onMoved")) {
-            this.doCallbacks("onMoved", this, this.sprite.x, this.sprite.y);
+        if(moved) {
+            this.notifyListeners("onMoved", this, this.sprite.x, this.sprite.y);
         }
     }
     

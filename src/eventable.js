@@ -1,29 +1,35 @@
+//		ball.registerListener("onPositionPredicted", (args) => this.onPositionPredicted(...args));
+
+
 export default class Eventable
 {
     constructor()
     {
-        this.callbacks = {};
+        this.listeners = {};
     }
 
-
-    hasCallback(type)
+    haveListeners(type)
     {
-        return this.callbacks[type] && this.callbacks[type].length > 0;
+        return this.listeners[type] && this.listeners[type].length > 0;
     }
 
-    // todo: removeCallback()
-    registerCallback(type, func) {
-        if (!this.callbacks[type]) {
-            this.callbacks[type] = [];
+    registerListener(type, func)
+    {
+        if (!this.listeners[type]) {
+            this.listeners[type] = [];
         }
 
-        this.callbacks[type].push(func);
+        this.listeners[type].push(func);
     }
 
-    doCallbacks(type, ...args) {
-        for (let i = 0; i < this.callbacks[type].length; i++) {
-            this.callbacks[type][i](args);
+    notifyListeners(type, ...args)
+    {
+        if(!this.haveListeners(type)) {
+            return;
         }
 
+        for (let i = 0; i < this.listeners[type].length; i++) {
+            this.listeners[type][i](args);
+        }
     }
 }

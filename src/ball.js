@@ -16,14 +16,24 @@ export default class Ball extends Eventable
 
         this.sprite = new PIXI.Graphics();
 
-        // outline
-        this.sprite.beginFill(0x000000);
-        this.sprite.drawCircle(0, 0, CONFIG.ball.radius + 2);
 
-        // actual ball
-        this.sprite.beginFill(CONFIG.ball.color);
-        this.sprite.drawCircle(0, 0, CONFIG.ball.radius);
-        this.sprite.endFill();
+        if(true) {
+            // bitmap
+            this.sprite = PIXI.Sprite.from('./assets/ball01.png');
+            this.sprite.anchor.set(0.5,0.5);
+            this.sprite.width = CONFIG.ball.radius * 2;
+            this.sprite.height = CONFIG.ball.radius * 2;
+        } else {
+            // outline
+            this.sprite.beginFill(0x000000);
+            this.sprite.drawCircle(0, 0, CONFIG.ball.radius + 2);
+
+            // actual ball
+            this.sprite.beginFill(CONFIG.ball.color);
+            this.sprite.drawCircle(0, 0, CONFIG.ball.radius);
+            this.sprite.endFill();
+        }
+
 
         this.sprite.x = this.app.view.width / 2; // - 280;       // 280 is DEBUG hack to make it hit center point
         this.sprite.y = this.app.view.height / 2;
@@ -36,7 +46,7 @@ export default class Ball extends Eventable
         this.app.stage.addChild(this.sprite);
         this.app.stage.addChild(this.trajectoryGraphics);
 
-        this.callbacks = {};
+        this.listeners = {};
         this.spin = CONFIG.ball.defaultSpin;
 
         this.gameStarted = false;
@@ -136,7 +146,7 @@ export default class Ball extends Eventable
                 (x < this.app.view.width / 2 ? this.paddleLeft : this.paddleRight)
             );
         }
-        
+
         return {
             newVelocity,
             newSpin,
@@ -146,9 +156,7 @@ export default class Ball extends Eventable
 
     move(keyboard) {
         if(!this.gameStarted) {
-            if(this.hasCallback("onBallReset")) {
-                this.doCallbacks("onBallReset", this.sprite.x, this.sprite.y, this.sprite.x, this.sprite.y);
-            }
+            this.notifyListeners("onBallReset", this.sprite.x, this.sprite.y, this.sprite.x, this.sprite.y);
             this.gameStarted = true;
         }
 
@@ -160,13 +168,13 @@ export default class Ball extends Eventable
         let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin);
 
         if (this.velocity.x !== collisionResult.newVelocity.x || this.velocity.y !== collisionResult.newVelocity.y || this.spin !== collisionResult.newSpin) {
-            if(this.hasCallback("onCollision")) {
-                this.doCallbacks("onCollision", this.sprite.x, this.sprite.y, this.sprite.x - this.velocity.x, this.sprite.y - this.velocity.y, this.velocity.x, this.velocity.y, collisionResult.targets);
-            }
+            this.notifyListeners("onCollision", this.sprite.x, this.sprite.y, this.sprite.x - this.velocity.x, this.sprite.y - this.velocity.y, this.velocity.x, this.velocity.y, collisionResult.targets);
         }
 
         this.velocity = collisionResult.newVelocity;
         this.spin = collisionResult.newSpin;
+
+        this.sprite.rotation += this.spin;
 
         // Ball lost
         if (this.sprite.x <= CONFIG.ball.radius || this.sprite.x >= this.app.view.width - CONFIG.ball.radius) {
@@ -182,9 +190,7 @@ export default class Ball extends Eventable
             };
             this.spin = CONFIG.ball.defaultSpin;
 
-            if(this.hasCallback("onBallReset")) {
-                this.doCallbacks("onBallReset", this.sprite.x, this.sprite.y, prevX, prevY);
-            }
+            this.notifyListeners("onBallReset", this.sprite.x, this.sprite.y, prevX, prevY);
         }
     }
 
@@ -216,9 +222,7 @@ export default class Ball extends Eventable
             vy = collisionResult.newVelocity.y;
             spin = collisionResult.newSpin;
 
-            if(this.hasCallback("onPositionPredicted")) {
-                this.doCallbacks("onPositionPredicted", x, y, prevX, prevY, vx, vy, collisionResult.targets);
-            }
+            this.notifyListeners("onPositionPredicted", x, y, prevX, prevY, vx, vy, collisionResult.targets);
 
             // Ball lost?
             if (x <= CONFIG.ball.radius || x >= this.app.view.width - CONFIG.ball.radius) {
