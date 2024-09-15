@@ -8,11 +8,26 @@ import PredictPositionBot from "./bots/PredictPositionBot.js";
 class Game
 {
 	constructor() {
-		const app = new PIXI.Application(PIXICONFIG);
+		this.init();
+	}
+
+
+	async init()
+	{
+		const app = new PIXI.Application(PIXICONFIG);	// pass in PIXICONFIG for compat with Pixi 7
 		this.app = app;
+
+		// make it compatible with both pixi 7 and 8
+		if(app.init) {
+			await app.init(PIXICONFIG);
+		}
+
+		// console.log("hm", this.app.stage)
+		// this.stage = new PIXI.Container();
 		document.body.appendChild(app.view);
 		
-		this.initRevolt();
+		await this.initRevolt();
+		await this.loadAssets();
 
 		// Initialize keyboard
 		const keyboard = {};
@@ -111,25 +126,36 @@ class Game
 
 			this.ball.move(keyboard);
 
-			/*
 			if(this.ballEmitter) {
 				this.ballEmitter.x = this.ball.sprite.x;
 				this.ballEmitter.y = this.ball.sprite.y;
 			}
-			*/
 
 			this.updateDebugText();
 			this.frameCount++;
 		});
 	}
 
+	async loadAssets()
+	{
+		return;
+		
+		PIXI.Assets.add({ alias: 'ball', src: './assets/sprites.json' });
+		await PIXI.Assets.load(['fx_settings', 'fx_spritesheet', 'example_spritesheet']).then((data) => {
+			// this.fx.initBundle(data.ball);
+		});
+
+	}
+
 	async initRevolt()
 	{
+		/*
         //Hack WebGL Add BlendMode
         if (this.app.renderer.type == 1) {
 			console.log("blendmode hack");
             this.app.renderer.state.blendModes[PIXI.BLEND_MODES.ADD] = [this.app.renderer.gl.ONE, this.app.renderer.gl.ONE];
         }
+		*/
 
 		this.fx = new revolt.FX();
 
@@ -151,14 +177,13 @@ class Game
 		emitter.init(container, true, 1.1);
 		emitter.x = PIXICONFIG.width * 0.5;
 		emitter.y = PIXICONFIG.height * 0.5;
-
-		/*
+/*
 		// ball-test
-		this.ballEmitter = this.fx.getParticleEmitter('fireworks-sub1', true, true);
+		this.ballEmitter = this.fx.getParticleEmitter('fire-arc', true, true);
 		this.ballEmitter.settings.Min = 1;
 		this.ballEmitter.settings.spawnCountMax = 1;
-		this.ballEmitter.init(container, true, 1);
-		*/
+		this.ballEmitter.init(container, true, 0.2);
+*/
 	}
 
 	updateDebugText()

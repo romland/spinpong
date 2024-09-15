@@ -1,13 +1,24 @@
-import CONFIG from "./config.js";
+import CONFIG, { PIXICONFIG } from "./config.js";
 
 export default class Wall {
-    constructor(app, x, y, width, controls) {
+    constructor(app, x, y, width, controls)
+    {
         this.app = app;
         this.spinIndicators = [];
-        this.sprite = new PIXI.Graphics();
-        this.sprite.beginFill(CONFIG.walls.color);
-        this.sprite.drawRect(2, 0, width - 2, CONFIG.walls.height);
-        this.sprite.endFill();
+        var back = PIXI.Sprite.from('gradient2');
+        // back.tint = 0xB03A00;
+        back.tint = 0xffffff;
+
+        if(y !== 0) {
+            back.anchor.y = 1;
+            back.scale.y *= -1;
+        }
+        back.width = width - 2;
+        back.height = CONFIG.walls.height;
+        back.y = y;
+        back.alpha = 1;
+        this.sprite = back;
+
         this.sprite.x = x;
         this.sprite.y = y;
         this.surfaceSpeed = 0;
@@ -19,9 +30,9 @@ export default class Wall {
     
     initSurface() {
         this.surface = new PIXI.Graphics();
-        this.surface.beginFill(0x000000);
+        // this.surface.beginFill(0x000000);
         this.surface.drawRoundedRect(0, -2, this.sprite.width + 4, CONFIG.walls.height + 4, 5);
-        this.surface.endFill();
+        // this.surface.endFill();
         
         this.surface.position.set(this.sprite.x + 0, this.sprite.y - 0);
         this.app.stage.addChild(this.surface);

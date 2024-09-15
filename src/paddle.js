@@ -25,11 +25,23 @@ export default class Paddle extends Eventable
 
         this.sprite.x = x;
         this.sprite.y = y;
+
+        this.sprite.filters = [
+            new PIXI.filters.DropShadowFilter({
+                blur : 2,
+                quality: 3,
+                alpha: 0.5,
+                offsetX : 4,
+                offsetY : 4,
+                shadowOnly : false,
+            })
+        ];
+
         this.surfaceSpeed = 0;
         this.controls = controls;
         
+
         this.spinIndicators = [];
-        
         this.initSurface();
         this.app.stage.addChild(this.sprite);
         
@@ -53,8 +65,8 @@ export default class Paddle extends Eventable
         
         for (let i = 0; i < numIndicators; i++) {
             const indicator = new PIXI.Graphics();
-            indicator.beginFill(0x0000FF);
-            indicator.drawCircle(0, 0, 3);
+            indicator.beginFill(0x0000aa);
+            indicator.drawCircle(0, 0, 2);
             indicator.endFill();
             indicator.x = this.sprite.x;
             indicator.y = this.sprite.y;

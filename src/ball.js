@@ -14,16 +14,14 @@ export default class Ball extends Eventable
         this.rightTopWall = rightTopWall;
         this.rightBottomWall = rightBottomWall;
 
-        this.sprite = new PIXI.Graphics();
-
-
         if(true) {
             // bitmap
-            this.sprite = PIXI.Sprite.from('./assets/ball01.png');
+            this.sprite = PIXI.Sprite.from('./assets/ball01-mirrored.png');
             this.sprite.anchor.set(0.5,0.5);
             this.sprite.width = CONFIG.ball.radius * 2;
             this.sprite.height = CONFIG.ball.radius * 2;
         } else {
+            this.sprite = new PIXI.Graphics();
             // outline
             this.sprite.beginFill(0x000000);
             this.sprite.drawCircle(0, 0, CONFIG.ball.radius + 2);
@@ -35,15 +33,27 @@ export default class Ball extends Eventable
         }
 
 
-        this.sprite.x = this.app.view.width / 2; // - 280;       // 280 is DEBUG hack to make it hit center point
+        this.sprite.x = this.app.view.width / 2; // - 280;       // 280 is DEBUG to make it hit center point
         this.sprite.y = this.app.view.height / 2;
         this.velocity = {
             x: CONFIG.ball.initialVel * 1,
             y: CONFIG.ball.initialVel * 1
         };
         this.spin = 0;
-        this.trajectoryGraphics = new PIXI.Graphics();
+
+        this.sprite.filters = [
+            new PIXI.filters.DropShadowFilter({
+                blur : 2,
+                quality: 3,
+                alpha: 0.5,
+                offsetX : 4,
+                offsetY : 4,
+                shadowOnly : false,
+            })
+        ];
         this.app.stage.addChild(this.sprite);
+
+        this.trajectoryGraphics = new PIXI.Graphics();
         this.app.stage.addChild(this.trajectoryGraphics);
 
         this.listeners = {};
