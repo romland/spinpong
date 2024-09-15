@@ -1,12 +1,11 @@
-```
-/*
+## Spin Pong
+
 It's Pong with a few twists. Let's call it "Spin Pong". There are surfaces that move
 around the paddles and walls. These moving surfaces can be used to give the ball a spin
 or undo existing spin. Pretty much like how you give a ball a spin in any ball-game; like
 ping-pong, tennis or soccer.
-*/
 
-```
+
 ![Screenshot 0001](.github/0001.png)
 
 ```
