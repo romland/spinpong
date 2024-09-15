@@ -6,6 +6,10 @@ or undo existing spin. Pretty much like how you give a ball a spin in any ball-g
 ping-pong, tennis or soccer.
 */
 
+
+![Screenshot 0001](.github/0001.png)
+
+
 /*
 Notes:
 - this is merely a very early prototype to see if it would even be fun.
