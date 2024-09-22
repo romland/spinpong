@@ -77,7 +77,6 @@ export default class Ball extends Eventable
                     targets: [gameObjects[i]]
                 };
             }
-
         }
 
         if (y <= CONFIG.walls.height + CONFIG.ball.radius && x <= this.app.view.width / 2) {
@@ -167,6 +166,8 @@ export default class Ball extends Eventable
             );
         }
 
+        newSpin -= newSpin * CONFIG.ball.spinDecayPerFrame;
+
         return {
             newVelocity,
             newSpin,
@@ -237,7 +238,7 @@ export default class Ball extends Eventable
             x += vx;
             y += vy;
 
-            let collisionResult = this.checkCollision(x, y, { x: vx, y: vy }, spin, gameObjects);
+            let collisionResult = this.checkCollision(x, y, { x: vx, y: vy }, spin, gameObjects, false);
             vx = collisionResult.newVelocity.x;
             vy = collisionResult.newVelocity.y;
             spin = collisionResult.newSpin;
