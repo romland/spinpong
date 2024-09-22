@@ -10,5 +10,25 @@ const CONFIG = {
     debug: { trajectoryColor: 0xffff00, trajectoryWidth: 1 }
 };
 
-export { CONFIG, PIXICONFIG };
+const BRICKTYPES = {
+    "1" : {
+        graphic: './assets/brick02-132x256.png',
+        width: 132,
+        height: 256,
+        scale : 0.25,
+        health: 3,
+        vertices: [
+            { x: 50, y: 0 }, 
+            { x: 85, y: 0 }, 
+            { x: 132, y: 45 }, 
+            { x: 132, y: 210 }, 
+            { x: 85, y: 256 }, 
+            { x: 50, y: 256 }, 
+            { x: 0, y: 210 }, 
+            { x: 0, y: 45 }
+        ]
+    }
+}
+
+export { CONFIG, PIXICONFIG, BRICKTYPES };
 export default CONFIG;

@@ -76,7 +76,7 @@ export default class CollisionShape
     drawOutline(vertices)
     {
         this.app.stage.addChild(this.debugLayer);
-        this.debugLayer.lineStyle(2, 0xffffff);
+        this.debugLayer.lineStyle(4, 0xffffff);
         
         this.debugLayer.moveTo(vertices[0].x, vertices[0].y);
         for (let i = 0; i < vertices.length; i++) {

@@ -1,54 +1,76 @@
 import CollisionShape from "./collisionshape.js"
 import Eventable from "./eventable.js";
-import { CONFIG } from "./config.js";
+import { CONFIG, BRICKTYPES } from "./config.js";
 
 export default class Brick extends Eventable
 {
-    constructor(app, x, y, type)
+    constructor(app, x, y, brickType)
     {
-        const SCALE = 0.25;
         super();
-
         this.app = app;
 
-        this.sprite = PIXI.Sprite.from('./assets/brick02-132x256.png');
+        // const brickType = brickConfig;
+        const scale = brickType.scale;
+        // const verts = brickType.vertices;
+        // const verts = brickType.vertices.map((arr) => arr.slice());
 
-        // note: Anchor is center
+        this.sprite = PIXI.Sprite.from(brickType.graphic);
+        // note: Anchor is center (not top-left)
         this.sprite.anchor.set(0.5, 0.5);
-        this.sprite.width = 132 * SCALE;
-        this.sprite.height = 256 * SCALE;
+        this.sprite.width = brickType.width * scale;
+        this.sprite.height = brickType.height * scale;
 
         this.sprite.x = x;
         this.sprite.y = y;
 
+        this.health = brickType.health;
+
         this.app.stage.addChild(this.sprite);
 
-        const verts = [
-            { x: 50, y: 0 }, 
-            { x: 85, y: 0 }, 
-            { x: 132, y: 45 }, 
-            { x: 132, y: 210 }, 
-            { x: 85, y: 256 }, 
-            { x: 50, y: 256 }, 
-            { x: 0, y: 210 }, 
-            { x: 0, y: 45 }
-        ];
+        const verts = this.scalePolygon(scale, brickType.vertices);
 
-        this.scale(SCALE, verts);
         this.originalScale = {x:this.sprite.scale.x, y: this.sprite.scale.y};
         
         this.shape = new CollisionShape(this.app, verts);
     }
 
-    scale(factor, verts)
+    reduceHealth()
     {
+        if(this.health > 0) {
+            this.health--;
+        }
+    }
+
+    isDead()
+    {
+        return this.health === 0;
+    }
+
+    /**
+     * Note: this must return a copy or we'll mess up future instances of this shape.
+     * @param {*} scale 
+     * @param {*} verts 
+     */
+    scalePolygon(scale, verts)
+    {
+        const ret = [];
         for(let i = 0; i < verts.length; i++) {
+            ret.push(
+                {
+                    x: (verts[i].x * scale) + (this.sprite.x - this.sprite.width/2),
+                    y: (verts[i].y * scale) + (this.sprite.y - this.sprite.height/2)
+                }
+            );
+            /*
             verts[i].x *= factor;
             verts[i].y *= factor;
 
             verts[i].x += this.sprite.x - this.sprite.width/2;
             verts[i].y += this.sprite.y - this.sprite.height/2;
+            */
         }
+
+        return ret;
     }
 
     checkCollision(ballPos, ballVel, liveCollision = false)

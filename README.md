@@ -58,6 +58,7 @@ TODO thoughts:
 - pinata-type-thing -- large thing that needs to be knocked down to with N hits, then explodes into a bunch of powerups,
   number of knocks should count _down_ using some floating text (so... e.g. 10->9-> ...)
 - get point for each brick you remove? (you = last paddle to touch ball)
+- use generated generative cartoon characters for power-ups (i.e. a guy running for faster ball, etc)
 
 Achievement tracking:
 - highest velocity ball returned
