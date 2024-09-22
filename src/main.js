@@ -3,6 +3,7 @@ import Ball from "./ball.js";
 import Paddle from "./paddle.js";
 import Wall from "./wall.js";
 import Brick from "./brick.js";
+import BrickSet from "./brickset.js";
 import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
 
@@ -96,8 +97,13 @@ class Game
 		// let rightBot = new FollowBot(this.paddleRight);
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
-		let powerUps = [
-			new Brick(this.app, 500, 200, ""),
+		let gameObjects = [
+			// new Brick(this.app, 500, 200, ""),
+			new BrickSet(app).createFromMatrix(
+				"     1 1 111\n" +
+				"     111  1 \n" +
+				"     1 1 111\n"
+			)
 		];
 
 		app.ticker.add(() => {
@@ -111,8 +117,8 @@ class Game
 			// 	debugger;
 			// }
 
-			for(let i = 0; i < powerUps.length; i++) {
-				powerUps[i].move(keyboard);
+			for(let i = 0; i < gameObjects.length; i++) {
+				gameObjects[i].move(keyboard);
 			}
 
 			if (leftBot) {
@@ -132,7 +138,7 @@ class Game
 			this.rightTopWall.move(keyboard);
 			this.rightBottomWall.move(keyboard);
 			
-			this.ball.move(keyboard, powerUps);
+			this.ball.move(keyboard, gameObjects);
 
 			if(this.ballEmitter) {
 				this.ballEmitter.x = this.ball.sprite.x;

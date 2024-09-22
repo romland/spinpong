@@ -57,6 +57,7 @@ TODO thoughts:
 - sub-game: uncover a background and guess what the it contains (uncover by sending ball there)
 - pinata-type-thing -- large thing that needs to be knocked down to with N hits, then explodes into a bunch of powerups,
   number of knocks should count _down_ using some floating text (so... e.g. 10->9-> ...)
+- get point for each brick you remove? (you = last paddle to touch ball)
 
 Achievement tracking:
 - highest velocity ball returned

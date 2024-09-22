@@ -12,7 +12,9 @@ export default class Brick extends Eventable
         this.app = app;
 
         this.sprite = PIXI.Sprite.from('./assets/brick02-132x256.png');
-        this.sprite.anchor.set(0,0);
+
+        // note: Anchor is center
+        this.sprite.anchor.set(0.5, 0.5);
         this.sprite.width = 132 * SCALE;
         this.sprite.height = 256 * SCALE;
 
@@ -33,6 +35,7 @@ export default class Brick extends Eventable
         ];
 
         this.scale(SCALE, verts);
+        this.originalScale = {x:this.sprite.scale.x, y: this.sprite.scale.y};
         
         this.shape = new CollisionShape(this.app, verts);
     }
@@ -43,20 +46,39 @@ export default class Brick extends Eventable
             verts[i].x *= factor;
             verts[i].y *= factor;
 
-            verts[i].x += this.sprite.x;
-            verts[i].y += this.sprite.y;
+            verts[i].x += this.sprite.x - this.sprite.width/2;
+            verts[i].y += this.sprite.y - this.sprite.height/2;
         }
     }
 
-    checkCollision(ballPos, ballVel)
+    checkCollision(ballPos, ballVel, liveCollision = false)
     {
         const newVel = this.shape.checkCollision(ballPos, ballVel, CONFIG.ball.radius);
-        // console.log(newVel);
+        if(liveCollision && newVel) {
+            this.shrinkAndGrow();
+        }
+
         return newVel;
     }
 
-    move(keyboard)
-    {
+    shrinkAndGrow() {
+        this.sprite.scale.set(this.originalScale.x * 0.9, this.originalScale.y * 0.9);
+        this.growing = true;
+        this.growSpeed = 0.0015;
     }
 
+
+    move(keyboard)
+    {
+        if(this.growing) {
+            if (this.sprite.scale.x < this.originalScale.x && this.sprite.scale.y < this.originalScale.y) {
+                this.sprite.scale.x += this.growSpeed;
+                this.sprite.scale.y += this.growSpeed;
+            } else {
+                this.sprite.scale.set(this.originalScale.x, this.originalScale.y);
+                this.growing = false;
+            }
+        }
+
+    }
 }

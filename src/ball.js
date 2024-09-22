@@ -57,7 +57,7 @@ export default class Ball extends Eventable
         this.gameStarted = false;
     }
 
-    checkCollision(x, y, velocity, spin, gameObjects)
+    checkCollision(x, y, velocity, spin, gameObjects, liveCollision = false)
     {
         let newVelocity = {
             ...velocity
@@ -68,8 +68,8 @@ export default class Ball extends Eventable
         let tmpVel;
         // check collision of powerups etc
         for(let i = 0; i < gameObjects.length; i++) {
-            // This will not return a new spin (not needed yet)
-            tmpVel = gameObjects[i].checkCollision({x,y}, velocity);
+            // This will NOT return a new spin (not needed yet)
+            tmpVel = gameObjects[i].checkCollision({x,y}, velocity, liveCollision);
             if(tmpVel) {
                 return {
                     newVelocity: tmpVel,
@@ -185,7 +185,7 @@ export default class Ball extends Eventable
         this.sprite.x += this.velocity.x;
         this.sprite.y += this.velocity.y;
 
-        let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin, gameObjects);
+        let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin, gameObjects, true);
 
         if (this.velocity.x !== collisionResult.newVelocity.x || this.velocity.y !== collisionResult.newVelocity.y || this.spin !== collisionResult.newSpin) {
             this.notifyListeners("onCollision", this.sprite.x, this.sprite.y, this.sprite.x - this.velocity.x, this.sprite.y - this.velocity.y, this.velocity.x, this.velocity.y, collisionResult.targets);
