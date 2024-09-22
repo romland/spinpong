@@ -61,13 +61,6 @@ export default class Brick extends Eventable
                     y: (verts[i].y * scale) + (this.sprite.y - this.sprite.height/2)
                 }
             );
-            /*
-            verts[i].x *= factor;
-            verts[i].y *= factor;
-
-            verts[i].x += this.sprite.x - this.sprite.width/2;
-            verts[i].y += this.sprite.y - this.sprite.height/2;
-            */
         }
 
         return ret;

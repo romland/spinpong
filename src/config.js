@@ -16,7 +16,7 @@ const BRICKTYPES = {
         width: 132,
         height: 256,
         scale : 0.25,
-        health: 3,
+        health: 1,
         vertices: [
             { x: 50, y: 0 }, 
             { x: 85, y: 0 }, 

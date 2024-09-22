@@ -7,6 +7,10 @@ export default class BrickSet
     {
         this.app = app;
         this.bricks = [];
+
+        // For FX
+		this.particlesContainer = new PIXI.Container();
+		this.app.stage.addChild(this.particlesContainer);
     }
 
 
@@ -59,12 +63,22 @@ export default class BrickSet
     removeBrickByIndex(brickIndex)
     {
         const brick = this.bricks[brickIndex];
+
+        // explosion
+        // this.particleDead = GAME.fx.getParticleEmitter('top-big-explosion-sub5', true, true);
+        this.particleDead = GAME.fx.getParticleEmitter('fireworks-sub3', true, true);
+        this.particleDead.x = brick.sprite.x;
+        this.particleDead.y = brick.sprite.y;
+        this.particleDead.settings.Min = 1;
+        this.particleDead.settings.spawnCountMax = 1;
+        this.particleDead.init(this.particlesContainer, true, 1);
+
+        // Remove it
         this.app.stage.removeChild(brick.sprite);
         this.bricks.splice(brickIndex, 1);
-
     }
 
-    
+
     move(keyboard) {
         for (let brick of this.bricks) {
             brick.move(keyboard);
