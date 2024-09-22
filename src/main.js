@@ -100,10 +100,9 @@ class Game
 		let gameObjects = [
 			// new Brick(this.app, 500, 200, ""),
 			new BrickSet(app).createFromMatrix(
-				"\n    11" +
-				// "     1 1 111\n" +
-				// "     111  1 \n" +
-				// "     1 1 111\n" +
+				"     1 1 111\n" +
+				"     111  1 \n" +
+				"     1 1 111\n" +
 				""
 			)
 		];

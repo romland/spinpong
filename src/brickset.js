@@ -12,15 +12,11 @@ export default class BrickSet
 
     createFromMatrix(matrixString)
     {
-        // const brickWidth = 132 * 0.25; // Brick width * scale
-        // const brickHeight = 256 * 0.25; // Brick height * scale
-
         const matrix = matrixString.split('\n').map(row => row.split(''));
 
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
                 if (matrix[row][col] !== " ") {
-                    // const type = parseInt(matrix[row][col], 10);
                     const brickType = BRICKTYPES[matrix[row][col]];
                     const x = col * brickType.width * brickType.scale + brickType.width / 2 * brickType.scale;
                     const y = row * brickType.height * brickType.scale + brickType.height / 2 * brickType.scale;
@@ -40,6 +36,7 @@ export default class BrickSet
         this.app.stage.addChild(brick.sprite);
     }
 
+
     checkCollision(ballPos, ballVel, liveCollision)
     {
         for(let i = 0; i < this.bricks.length; i++) {
@@ -58,6 +55,7 @@ export default class BrickSet
         return null;
     }
 
+
     removeBrickByIndex(brickIndex)
     {
         const brick = this.bricks[brickIndex];
@@ -66,6 +64,7 @@ export default class BrickSet
 
     }
 
+    
     move(keyboard) {
         for (let brick of this.bricks) {
             brick.move(keyboard);
