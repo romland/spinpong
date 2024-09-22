@@ -2,6 +2,7 @@ import { CONFIG, PIXICONFIG } from "./config.js";
 import Ball from "./ball.js";
 import Paddle from "./paddle.js";
 import Wall from "./wall.js";
+import Brick from "./brick.js";
 import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
 
@@ -95,6 +96,10 @@ class Game
 		// let rightBot = new FollowBot(this.paddleRight);
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
+		let powerUps = [
+			new Brick(this.app, 500, 200, ""),
+		];
+
 		app.ticker.add(() => {
 			if (paused) {
 				return;
@@ -102,9 +107,13 @@ class Game
 
 			this.fx.update();
 
-			// if(window.GAME.frameCount > 1115) {
+			// if(window.GAME.frameCount === 720) {
 			// 	debugger;
 			// }
+
+			for(let i = 0; i < powerUps.length; i++) {
+				powerUps[i].move(keyboard);
+			}
 
 			if (leftBot) {
 				leftBot.update(this.paddleLeft, this.ball);
@@ -123,8 +132,7 @@ class Game
 			this.rightTopWall.move(keyboard);
 			this.rightBottomWall.move(keyboard);
 			
-
-			this.ball.move(keyboard);
+			this.ball.move(keyboard, powerUps);
 
 			if(this.ballEmitter) {
 				this.ballEmitter.x = this.ball.sprite.x;
@@ -139,7 +147,7 @@ class Game
 	async loadAssets()
 	{
 		return;
-		
+
 		PIXI.Assets.add({ alias: 'ball', src: './assets/sprites.json' });
 		await PIXI.Assets.load(['fx_settings', 'fx_spritesheet', 'example_spritesheet']).then((data) => {
 			// this.fx.initBundle(data.ball);
@@ -194,23 +202,23 @@ class Game
 		<tr>
 			<td width=33%>
 				<strong>Left bat</strong><br>
-				position: ${this.paddleLeft.sprite.x}, ${this.paddleLeft.sprite.y}<br>
-				bat surface: ${this.paddleLeft.surfaceSpeed}<br>
-				wall surfaces: ${this.topWall.surfaceSpeed}<br>
+				position: ${Math.round(this.paddleLeft.sprite.x)}, ${Math.round(this.paddleLeft.sprite.y)}<br>
+				bat surface: ${this.paddleLeft.surfaceSpeed.toFixed(5)}<br>
+				wall surfaces: ${this.topWall.surfaceSpeed.toFixed(5)}<br>
 			</td>
 			<td width=33%>
 				<strong>Ball</strong><br>
-				position: ${this.ball.sprite.x}, ${this.ball.sprite.y}<br>
-				spin: ${this.ball.spin}<br>
-				vel: ${this.ball.velocity.x}, ${this.ball.velocity.y}<br>
+				position: ${Math.round(this.ball.sprite.x)}, ${Math.round(this.ball.sprite.y)}<br>
+				spin: ${this.ball.spin.toFixed(5)}<br>
+				vel: ${this.ball.velocity.x.toFixed(5)}, ${this.ball.velocity.y.toFixed(5)}<br>
 				<br>
 				frame: ${this.frameCount}<br>
 			</td>
 			<td width=33%>
 				<strong>Right bat</strong><br>
-				position: ${this.paddleRight.sprite.x}, ${this.paddleRight.sprite.y}<br>
-				bat surface: ${this.paddleRight.surfaceSpeed}<br>
-				wall surfaces: ${this.rightTopWall.surfaceSpeed}<br>
+				position: ${Math.round(this.paddleRight.sprite.x)}, ${Math.round(this.paddleRight.sprite.y)}<br>
+				bat surface: ${this.paddleRight.surfaceSpeed.toFixed(5)}<br>
+				wall surfaces: ${this.rightTopWall.surfaceSpeed.toFixed(5)}<br>
 			</td>
 		</tr>
 	</table>

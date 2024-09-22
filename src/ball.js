@@ -14,23 +14,10 @@ export default class Ball extends Eventable
         this.rightTopWall = rightTopWall;
         this.rightBottomWall = rightBottomWall;
 
-        if(true) {
-            // bitmap
-            this.sprite = PIXI.Sprite.from('./assets/ball01-mirrored.png');
-            this.sprite.anchor.set(0.5,0.5);
-            this.sprite.width = CONFIG.ball.radius * 2;
-            this.sprite.height = CONFIG.ball.radius * 2;
-        } else {
-            this.sprite = new PIXI.Graphics();
-            // outline
-            this.sprite.beginFill(0x000000);
-            this.sprite.drawCircle(0, 0, CONFIG.ball.radius + 2);
-
-            // actual ball
-            this.sprite.beginFill(CONFIG.ball.color);
-            this.sprite.drawCircle(0, 0, CONFIG.ball.radius);
-            this.sprite.endFill();
-        }
+        this.sprite = PIXI.Sprite.from('./assets/ball01-mirrored.png');
+        this.sprite.anchor.set(0.5,0.5);
+        this.sprite.width = CONFIG.ball.radius * 2;
+        this.sprite.height = CONFIG.ball.radius * 2;
 
 
         this.sprite.x = this.app.view.width / 2; // - 280;       // 280 is DEBUG to make it hit center point
@@ -49,7 +36,15 @@ export default class Ball extends Eventable
                 offsetX : 4,
                 offsetY : 4,
                 shadowOnly : false,
-            })
+            }),
+            new PIXI.filters.GlowFilter({
+                distance: 15,
+                innerStrength: 0,
+                outerStrength: 2,
+                color: 0xffffff,
+                quality: 0.2,
+                alpha: 0.3,
+            }),
         ];
         this.app.stage.addChild(this.sprite);
 
@@ -62,13 +57,28 @@ export default class Ball extends Eventable
         this.gameStarted = false;
     }
 
-    checkCollision(x, y, velocity, spin)
+    checkCollision(x, y, velocity, spin, gameObjects)
     {
         let newVelocity = {
             ...velocity
         };
         let newSpin = spin;
         let targets = [];
+
+        let tmpVel;
+        // check collision of powerups etc
+        for(let i = 0; i < gameObjects.length; i++) {
+            // This will not return a new spin (not needed yet)
+            tmpVel = gameObjects[i].checkCollision({x,y}, velocity);
+            if(tmpVel) {
+                return {
+                    newVelocity: tmpVel,
+                    newSpin: newSpin,
+                    targets: [gameObjects[i]]
+                };
+            }
+
+        }
 
         if (y <= CONFIG.walls.height + CONFIG.ball.radius && x <= this.app.view.width / 2) {
             // Left upper wall
@@ -164,18 +174,18 @@ export default class Ball extends Eventable
         };
     }
 
-    move(keyboard) {
+    move(keyboard, gameObjects) {
         if(!this.gameStarted) {
             this.notifyListeners("onBallReset", this.sprite.x, this.sprite.y, this.sprite.x, this.sprite.y);
             this.gameStarted = true;
         }
 
-        this.drawTrajectory();
+        this.drawTrajectory(gameObjects);
         this.velocity.x += this.spin * CONFIG.ball.spinFactor;
         this.sprite.x += this.velocity.x;
         this.sprite.y += this.velocity.y;
 
-        let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin);
+        let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin, gameObjects);
 
         if (this.velocity.x !== collisionResult.newVelocity.x || this.velocity.y !== collisionResult.newVelocity.y || this.spin !== collisionResult.newSpin) {
             this.notifyListeners("onCollision", this.sprite.x, this.sprite.y, this.sprite.x - this.velocity.x, this.sprite.y - this.velocity.y, this.velocity.x, this.velocity.y, collisionResult.targets);
@@ -204,7 +214,7 @@ export default class Ball extends Eventable
         }
     }
 
-    drawTrajectory(DEBUGcurrentTrajectory) {
+    drawTrajectory(gameObjects, DEBUGcurrentTrajectory) {
         this.trajectoryGraphics.clear();
         this.trajectoryGraphics.lineStyle(CONFIG.debug.trajectoryWidth, CONFIG.debug.trajectoryColor);
 
@@ -227,7 +237,7 @@ export default class Ball extends Eventable
             x += vx;
             y += vy;
 
-            let collisionResult = this.checkCollision(x, y, { x: vx, y: vy }, spin);
+            let collisionResult = this.checkCollision(x, y, { x: vx, y: vy }, spin, gameObjects);
             vx = collisionResult.newVelocity.x;
             vy = collisionResult.newVelocity.y;
             spin = collisionResult.newSpin;

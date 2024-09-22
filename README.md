@@ -28,9 +28,11 @@ TODO power-ups/downs:
 - magnets (attracts ball and/or paddles depending on placement)
 - upgrade paddle (to ... things -- get different art)
 - ball shrinks every collision (winner is last paddle to touch it before it disintegrates)
+  supposedly something like 3.3% / second
 
 FIXES:
 - perhaps only draw prediction until 'dead' or 'next paddle hit' (and not several paddle hits)
+- spin-decay: spin of the ball should decrease over time (or at least per bounce?)
 
 IDEAS:
 - maybe a brickwall between the bats appear that then one player will have to knock a hole in to get ball over 
@@ -53,5 +55,12 @@ TODO thoughts:
 - add FCT to show when spin changes on walls/paddles
 - positive power-ups (for one-self) can perhaps be 'collected' and used later?
 - sub-game: uncover a background and guess what the it contains (uncover by sending ball there)
+- pinata-type-thing -- large thing that needs to be knocked down to with N hits, then explodes into a bunch of powerups,
+  number of knocks should count _down_ using some floating text (so... e.g. 10->9-> ...)
+
+Achievement tracking:
+- highest velocity ball returned
+- highest velocity ball won
+- number of paddle exchanges survived (left->right->leftt)
 */
 ```
