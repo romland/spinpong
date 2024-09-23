@@ -56,9 +56,7 @@ export default class Brick extends Eventable
             this.onHit();
         }
 
-        return {
-            newVelocity
-        };
+        return newVelocity ? { newVelocity } : null;
     }
 
 

@@ -18,6 +18,7 @@ class Game
 	{
 		const app = new PIXI.Application(PIXICONFIG);	// pass in PIXICONFIG for compat with Pixi 7
 		this.app = app;
+		app.ticker.maxFPS = 60;
 
 		// make it compatible with both pixi 7 and 8
 		if(app.init) {
@@ -93,13 +94,14 @@ class Game
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
 		let gameObjects = [
-			// new BrickSet(app, 300, 200).createFromMatrix(
-			// 	"1 1 111\n" +
-			// 	"111  1 \n" +
-			// 	"1 1 111\n" +
-			// 	""
-			// ),
-			new PowerUp(app, this.ball, 470, 440, POWERUPTYPES["faster-ball"])
+			new BrickSet(app, 300, 200).createFromMatrix(
+				"1 1 111\n" +
+				"111  1 \n" +
+				"1 1 111\n" +
+				""
+			),
+			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["faster-ball"]),
+			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"])
 		];
 
 		app.ticker.add(() => {

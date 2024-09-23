@@ -66,15 +66,15 @@ export default class Ball extends Eventable
         let targets = [];
 
         let collisionResult;
+        
         // check collision of bricks, powerups, etc
         for(let i = 0; i < gameObjects.length; i++) {
             collisionResult = gameObjects[i].checkCollision({x,y}, velocity, liveCollision);
             if(collisionResult) {
-                return {
-                    newVelocity: collisionResult.newVelocity,
-                    newSpin: collisionResult.newSpin ? collisionResult.newSpin : newSpin,
-                    targets: [gameObjects[i]]
-                };
+                newVelocity = collisionResult.newVelocity ? collisionResult.newVelocity : newVelocity;
+                newSpin = collisionResult.newSpin ? collisionResult.newSpin : newSpin;
+                targets.push(gameObjects[i])
+                break;
             }
         }
 
@@ -186,7 +186,6 @@ export default class Ball extends Eventable
         this.sprite.y += this.velocity.y;
 
         let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin, gameObjects, true);
-
         if(collisionResult.targets.includes(this.paddleLeft)) {
             this.notifyListeners("onLeftPaddleCollision", this.paddleLeft);
         }
@@ -222,7 +221,7 @@ export default class Ball extends Eventable
         }
     }
 
-    drawTrajectory(gameObjects, DEBUGcurrentTrajectory) {
+    drawTrajectory(gameObjects) {
         this.trajectoryGraphics.clear();
         this.trajectoryGraphics.lineStyle(CONFIG.debug.trajectoryWidth, CONFIG.debug.trajectoryColor);
 
@@ -233,8 +232,6 @@ export default class Ball extends Eventable
         let spin = this.spin;
         let prevX = 0;
         let prevY = 0;
-
-        if (DEBUGcurrentTrajectory) DEBUGcurrentTrajectory.push([x, y]);
 
         this.trajectoryGraphics.moveTo(x, y);
 
@@ -248,7 +245,7 @@ export default class Ball extends Eventable
             let collisionResult = this.checkCollision(x, y, { x: vx, y: vy }, spin, gameObjects, false);
             vx = collisionResult.newVelocity.x;
             vy = collisionResult.newVelocity.y;
-            spin = collisionResult.newSpin;
+            spin = collisionResult.newSpin ? collisionResult.newSpin : spin;
 
             this.notifyListeners("onPositionPredicted", x, y, prevX, prevY, vx, vy, collisionResult.targets);
 
@@ -256,8 +253,6 @@ export default class Ball extends Eventable
             if (x <= CONFIG.ball.radius || x >= this.app.view.width - CONFIG.ball.radius) {
                 break;
             }
-
-            if (DEBUGcurrentTrajectory) DEBUGcurrentTrajectory.push([x, y]);
 
             if (true || i % 20 === 0) {
                 this.trajectoryGraphics.lineTo(x, y);
