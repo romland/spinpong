@@ -1,11 +1,11 @@
-import { CONFIG, PIXICONFIG } from "./config.js";
+import { CONFIG, PIXICONFIG, POWERUPTYPES } from "./config.js";
 import Ball from "./ball.js";
 import Paddle from "./paddle.js";
 import Wall from "./wall.js";
-import Brick from "./brick.js";
 import BrickSet from "./brickset.js";
 import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
+import PowerUp from "./powerup.js";
 
 class Game
 {
@@ -29,16 +29,11 @@ class Game
 		document.body.appendChild(app.view);
 		
 		await this.initRevolt();
-		await this.loadAssets();
 
 		// Initialize keyboard
 		const keyboard = {};
 		window.addEventListener('keydown', (e) => {
 			if (e.code === "KeyP") {
-				const currTrajectory = [];
-				this.ball.drawTrajectory(currTrajectory);
-				console.log(currTrajectory);
-				
 				togglePause();
 			}
 			
@@ -98,13 +93,13 @@ class Game
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
 		let gameObjects = [
-			// new Brick(this.app, 500, 200, ""),
-			new BrickSet(app).createFromMatrix(
-				"     1 1 111\n" +
-				"     111  1 \n" +
-				"     1 1 111\n" +
+			new BrickSet(app, 300, 200).createFromMatrix(
+				"1 1 111\n" +
+				"111  1 \n" +
+				"1 1 111\n" +
 				""
-			)
+			),
+			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["faster-ball"])
 		];
 
 		app.ticker.add(() => {
@@ -118,10 +113,14 @@ class Game
 			// 	debugger;
 			// }
 
-			for(let i = 0; i < gameObjects.length; i++) {
-				gameObjects[i].move(keyboard);
+			for (let i = gameObjects.length - 1; i >= 0; i--) {
+				if (gameObjects[i].isDead()) {
+					gameObjects.splice(i, 1);
+				} else {
+					gameObjects[i].move(keyboard);
+				}
 			}
-
+			
 			if (leftBot) {
 				leftBot.update(this.paddleLeft, this.ball);
 			}
@@ -151,27 +150,14 @@ class Game
 		});
 	}
 
-	async loadAssets()
+	getBall()
 	{
-		return;
-
-		PIXI.Assets.add({ alias: 'ball', src: './assets/sprites.json' });
-		await PIXI.Assets.load(['fx_settings', 'fx_spritesheet', 'example_spritesheet']).then((data) => {
-			// this.fx.initBundle(data.ball);
-		});
-
+		return this.ball;
 	}
+
 
 	async initRevolt()
 	{
-		/*
-        //Hack WebGL Add BlendMode
-        if (this.app.renderer.type == 1) {
-			console.log("blendmode hack");
-            this.app.renderer.state.blendModes[PIXI.BLEND_MODES.ADD] = [this.app.renderer.gl.ONE, this.app.renderer.gl.ONE];
-        }
-		*/
-
 		this.fx = new revolt.FX();
 
 		PIXI.Assets.add({ alias: 'fx_settings', src: './libs/revoltfx/assets/default-bundle.json' });

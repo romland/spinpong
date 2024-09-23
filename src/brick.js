@@ -1,38 +1,39 @@
 import CollisionShape from "./collisionshape.js"
 import Eventable from "./eventable.js";
-import { CONFIG, BRICKTYPES } from "./config.js";
+import { CONFIG } from "./config.js";
 
 export default class Brick extends Eventable
 {
     constructor(app, x, y, brickType)
     {
         super();
-        this.app = app;
 
-        // const brickType = brickConfig;
         const scale = brickType.scale;
-        // const verts = brickType.vertices;
-        // const verts = brickType.vertices.map((arr) => arr.slice());
 
+        this.app = app;
         this.sprite = PIXI.Sprite.from(brickType.graphic);
-        // note: Anchor is center (not top-left)
-        this.sprite.anchor.set(0.5, 0.5);
+        this.sprite.anchor.set(0.5, 0.5);                   // note: Anchor is center (not top-left)
         this.sprite.width = brickType.width * scale;
         this.sprite.height = brickType.height * scale;
-
         this.sprite.x = x;
         this.sprite.y = y;
 
+        this.originalScale = { x : this.sprite.scale.x, y : this.sprite.scale.y };
         this.health = brickType.health;
 
+        this.shape = new CollisionShape(
+            this.app, 
+            this.sprite.x, 
+            this.sprite.y, 
+            this.sprite.width, 
+            this.sprite.height, 
+            scale, 
+            brickType.vertices
+        );
+
         this.app.stage.addChild(this.sprite);
-
-        const verts = this.scalePolygon(scale, brickType.vertices);
-
-        this.originalScale = {x:this.sprite.scale.x, y: this.sprite.scale.y};
-        
-        this.shape = new CollisionShape(this.app, verts);
     }
+
 
     reduceHealth()
     {
@@ -41,42 +42,26 @@ export default class Brick extends Eventable
         }
     }
 
+
     isDead()
     {
         return this.health === 0;
     }
 
-    /**
-     * Note: this must return a copy or we'll mess up future instances of this shape.
-     * @param {*} scale 
-     * @param {*} verts 
-     */
-    scalePolygon(scale, verts)
-    {
-        const ret = [];
-        for(let i = 0; i < verts.length; i++) {
-            ret.push(
-                {
-                    x: (verts[i].x * scale) + (this.sprite.x - this.sprite.width/2),
-                    y: (verts[i].y * scale) + (this.sprite.y - this.sprite.height/2)
-                }
-            );
-        }
 
-        return ret;
-    }
-
-    checkCollision(ballPos, ballVel, liveCollision = false)
+    checkCollision(pos, vel, liveCollision = false)
     {
-        const newVel = this.shape.checkCollision(ballPos, ballVel, CONFIG.ball.radius);
+        const newVel = this.shape.checkCollision(pos, vel, CONFIG.ball.radius);
         if(liveCollision && newVel) {
-            this.shrinkAndGrow();
+            this.onHit();
         }
 
         return newVel;
     }
 
-    shrinkAndGrow() {
+
+    onHit()
+    {
         this.sprite.scale.set(this.originalScale.x * 0.9, this.originalScale.y * 0.9);
         this.growing = true;
         this.growSpeed = 0.0015;

@@ -8,7 +8,7 @@ const CONFIG = {
     ball: { 
         radius: 10, 
         color: 0xffffff, 
-        spinDecayPerFrame: 0.05 / 60,   // 5% per frame
+        spinDecayPerFrame: 0.02 / 60,   // N % per frame
         spinFactor: 0.1,
         initialVel: 2, 
         defaultSpin: -0.1
@@ -35,8 +35,27 @@ const BRICKTYPES = {
             { x: 0, y: 210 }, 
             { x: 0, y: 45 }
         ]
+    },
+}
+
+const POWERUPTYPES = {
+    "faster-ball" : {
+        graphic: './assets/powerup01-256x209.png',
+        width: 256,
+        height: 209,
+        scale : 0.2,
+        vertices: [
+            { x : 0,   y : 0   },
+            { x : 256, y : 0   },
+            { x : 256, y : 209 },
+            { x : 0, y : 209 },
+        ],
+        effect: (lastPaddle, ball) => {
+            ball.velocity.x *= 2;
+            ball.velocity.y *= 2;
+        }
     }
 }
 
-export { CONFIG, PIXICONFIG, BRICKTYPES };
+export { CONFIG, PIXICONFIG, BRICKTYPES, POWERUPTYPES };
 export default CONFIG;

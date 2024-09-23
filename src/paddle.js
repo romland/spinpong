@@ -9,19 +9,11 @@ export default class Paddle extends Eventable
         this.app = app;
 
 
-        if(true) {
-            // bitmap
-            this.sprite = PIXI.Sprite.from('./assets/paddle03.png');
-            this.sprite.anchor.set(0,0);
-            this.sprite.width = CONFIG.paddle.width;
-            this.sprite.height = CONFIG.paddle.height;
-        } else {
-            // primitives
-            this.sprite = new PIXI.Graphics();
-            this.sprite.beginFill(CONFIG.paddle.color);
-            this.sprite.drawRect(0, 0, CONFIG.paddle.width, CONFIG.paddle.height);
-            this.sprite.endFill();
-        }
+        // bitmap
+        this.sprite = PIXI.Sprite.from('./assets/paddle03.png');
+        this.sprite.anchor.set(0,0);
+        this.sprite.width = CONFIG.paddle.width;
+        this.sprite.height = CONFIG.paddle.height;
 
         this.sprite.x = x;
         this.sprite.y = y;

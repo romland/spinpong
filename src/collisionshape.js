@@ -1,16 +1,41 @@
 export default class CollisionShape
 {
     // note: only convex supported
-    constructor(app, vertices)
+    constructor(app, x, y, width, height, scale, vertices)
     {
         this.app = app;
-        this.vertices = vertices;
+
+        this.vertices = this.scalePolygon(x, y, width, height, scale, vertices);
         
         // debug
         // this.debugLayer = new PIXI.Graphics();
-        // this.drawOutline(vertices);
+        // this.drawOutline(this.vertices);
     }
     
+
+    /**
+     * Note: this must return a copy of vertices,due to them likely 
+     *       coming from BRICKTYPES config), or we'll mess up future 
+     *       instances of this shape.
+     * @param {*} scale 
+     * @param {*} verts 
+     */
+    scalePolygon(x, y, width, height, scale, verts)
+    {
+        const ret = [];
+        for(let i = 0; i < verts.length; i++) {
+            ret.push(
+                {
+                    x: (verts[i].x * scale) + (x - width/2),
+                    y: (verts[i].y * scale) + (y - height/2)
+                }
+            );
+        }
+
+        return ret;
+    }
+
+
     isPointInPolygon(point)
     {
         const { x, y } = point;

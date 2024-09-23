@@ -3,10 +3,12 @@ import { PIXICONFIG, BRICKTYPES } from "./config.js";
 
 export default class BrickSet
 {
-    constructor(app)
+    constructor(app, x, y)
     {
         this.app = app;
         this.bricks = [];
+        this.x = x;
+        this.y = y;
 
         // For FX
 		this.particlesContainer = new PIXI.Container();
@@ -14,6 +16,7 @@ export default class BrickSet
     }
 
 
+    // Note: At the moment we cannot mix different size bricks and expect them to be positioned reliably.
     createFromMatrix(matrixString)
     {
         const matrix = matrixString.split('\n').map(row => row.split(''));
@@ -22,8 +25,8 @@ export default class BrickSet
             for (let col = 0; col < matrix[row].length; col++) {
                 if (matrix[row][col] !== " ") {
                     const brickType = BRICKTYPES[matrix[row][col]];
-                    const x = col * brickType.width * brickType.scale + brickType.width / 2 * brickType.scale;
-                    const y = row * brickType.height * brickType.scale + brickType.height / 2 * brickType.scale;
+                    const x = this.x + col * brickType.width * brickType.scale + brickType.width / 2 * brickType.scale;
+                    const y = this.y + row * brickType.height * brickType.scale + brickType.height / 2 * brickType.scale;
                     this.addBrick(x, y, brickType);
                 }
             }
@@ -59,6 +62,11 @@ export default class BrickSet
         return null;
     }
 
+    isDead()
+    {
+        // TODO: Check if all bricks are gone, return true
+        return false;
+    }
 
     removeBrickByIndex(brickIndex)
     {
@@ -79,7 +87,8 @@ export default class BrickSet
     }
 
 
-    move(keyboard) {
+    move(keyboard)
+    {
         for (let brick of this.bricks) {
             brick.move(keyboard);
         }

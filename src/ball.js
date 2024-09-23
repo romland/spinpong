@@ -20,7 +20,7 @@ export default class Ball extends Eventable
         this.sprite.height = CONFIG.ball.radius * 2;
 
 
-        this.sprite.x = this.app.view.width / 2; // - 280;       // 280 is DEBUG to make it hit center point
+        this.sprite.x = this.app.view.width / 2;
         this.sprite.y = this.app.view.height / 2;
         this.velocity = {
             x: CONFIG.ball.initialVel * 1,
@@ -66,7 +66,7 @@ export default class Ball extends Eventable
         let targets = [];
 
         let tmpVel;
-        // check collision of powerups etc
+        // check collision of bricks, powerups etc
         for(let i = 0; i < gameObjects.length; i++) {
             // This will NOT return a new spin (not needed yet)
             tmpVel = gameObjects[i].checkCollision({x,y}, velocity, liveCollision);
@@ -187,6 +187,14 @@ export default class Ball extends Eventable
         this.sprite.y += this.velocity.y;
 
         let collisionResult = this.checkCollision(this.sprite.x, this.sprite.y, this.velocity, this.spin, gameObjects, true);
+
+        if(collisionResult.targets.includes(this.paddleLeft)) {
+            this.notifyListeners("onLeftPaddleCollision", this.paddleLeft);
+        }
+
+        if(collisionResult.targets.includes(this.paddleRight)) {
+            this.notifyListeners("onRightPaddleCollision", this.paddleRight);
+        }
 
         if (this.velocity.x !== collisionResult.newVelocity.x || this.velocity.y !== collisionResult.newVelocity.y || this.spin !== collisionResult.newSpin) {
             this.notifyListeners("onCollision", this.sprite.x, this.sprite.y, this.sprite.x - this.velocity.x, this.sprite.y - this.velocity.y, this.velocity.x, this.velocity.y, collisionResult.targets);
