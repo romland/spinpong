@@ -142,11 +142,6 @@ class Game
 			
 			this.ball.move(keyboard, gameObjects);
 
-			if(this.ballEmitter) {
-				this.ballEmitter.x = this.ball.sprite.x;
-				this.ballEmitter.y = this.ball.sprite.y;
-			}
-
 			this.updateDebugText();
 			this.frameCount++;
 		});
@@ -180,13 +175,6 @@ class Game
 		emitter.init(container, true, 1.1);
 		emitter.x = PIXICONFIG.width * 0.5;
 		emitter.y = PIXICONFIG.height * 0.5;
-/*
-		// ball-test
-		this.ballEmitter = this.fx.getParticleEmitter('fire-arc', true, true);
-		this.ballEmitter.settings.Min = 1;
-		this.ballEmitter.settings.spawnCountMax = 1;
-		this.ballEmitter.init(container, true, 0.2);
-*/
 	}
 
 	updateDebugText()

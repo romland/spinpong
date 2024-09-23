@@ -48,6 +48,18 @@ export default class PowerUp extends Eventable
         ball.registerListener("onLeftPaddleCollision", (args) => this.onPaddleCollision(...args));
         ball.registerListener("onRightPaddleCollision", (args) => this.onPaddleCollision(...args));
 
+        // For FX
+		this.particlesContainer = new PIXI.Container();
+		this.app.stage.addChild(this.particlesContainer);
+
+        /*
+		this.ballEmitter = GAME.fx.getParticleEmitter('fire-arc', true, true);
+		this.ballEmitter.settings.Min = 1;
+        this.ballEmitter.x = this.sprite.x;
+        this.ballEmitter.y = this.sprite.y;
+		this.ballEmitter.settings.spawnCountMax = 1;
+		this.ballEmitter.init(this.particlesContainer, true, 0.5);
+        */
     }
 
     onPaddleCollision(paddle)
@@ -70,26 +82,23 @@ export default class PowerUp extends Eventable
 
     onHit(pos, vel)
     {
-        /*
-        // explosion
+        console.log("Powerup taken!");
+
         this.particleDead = GAME.fx.getParticleEmitter('top-big-explosion-sub5', true, true);
-        // this.particleDead = GAME.fx.getParticleEmitter('fireworks-sub3', true, true);
-        this.particleDead.x = brick.sprite.x;
-        this.particleDead.y = brick.sprite.y;
+        this.particleDead.x = this.sprite.x;
+        this.particleDead.y = this.sprite.y;
         this.particleDead.settings.Min = 1;
         this.particleDead.settings.spawnCountMax = 1;
-        this.particleDead.init(this.particlesContainer, true, 1);
-        */
+        this.particleDead.init(this.particlesContainer, true, 0.75);
 
-        console.log("Powerup taken!");
         this.remove();
 
-// TODO: Need a big fat explanation here (and in config?) explaining that if we want to
-//       change velocity or spin of the ball, we must return it instead of applying it 
-//       directly.
-//
-//       If we don't return it (that is, null), we'll overwrite whatever spin/vel we set
-//       in effect().
+        // TODO: Need a big fat explanation here (and in config?) explaining that if we want to
+        //       change velocity or spin of the ball, we must return it instead of applying it 
+        //       directly.
+        //
+        //       If we don't return it (that is, null), we'll overwrite whatever spin/vel we set
+        //       in effect().
         return this.powerUpType.effect(this.lastPaddle, GAME.getBall());
     }
 
