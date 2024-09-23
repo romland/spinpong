@@ -46,6 +46,7 @@ const BRICKTYPES = {
 
 const POWERUPTYPES = {
     "faster-ball" : {
+        text: "FASTER",
         graphic: './assets/powerup01-256x209.png',
         width: 256,
         height: 209,
@@ -67,6 +68,7 @@ const POWERUPTYPES = {
         }
     },
     "slower-ball" : {
+        text: "SLOWER",
         graphic: './assets/powerup01-256x209.png',
         width: 256,
         height: 209,

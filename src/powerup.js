@@ -1,4 +1,3 @@
-// powerup01-256x209.png
 import CollisionShape from "./collisionshape.js"
 import Eventable from "./eventable.js";
 import { CONFIG } from "./config.js";
@@ -80,6 +79,20 @@ export default class PowerUp extends Eventable
         return null;    // never bounce off it.
     }
 
+    showText(text)
+    {
+        GAME.getFct().add(
+            text.toUpperCase(),
+            {
+                x: this.sprite.x,
+                y: this.sprite.y,
+                fadeOutTime: 50,
+                timeToLive: 100,
+                direction: { x: 0, y: -2.5 }
+            }
+        );
+    }
+
     onHit(pos, vel)
     {
         console.log("Powerup taken!");
@@ -91,6 +104,7 @@ export default class PowerUp extends Eventable
         this.particleDead.settings.spawnCountMax = 1;
         this.particleDead.init(this.particlesContainer, true, 0.75);
 
+        this.showText(this.powerUpType.text);
         this.remove();
 
         // TODO: Need a big fat explanation here (and in config?) explaining that if we want to

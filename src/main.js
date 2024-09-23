@@ -6,6 +6,7 @@ import BrickSet from "./brickset.js";
 import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
 import PowerUp from "./powerup.js";
+import { FloatingCombatTextManager } from "./floatingcombattext.js"
 
 class Game
 {
@@ -30,6 +31,8 @@ class Game
 		document.body.appendChild(app.view);
 		
 		await this.initRevolt();
+
+		this.fct = new FloatingCombatTextManager();
 
 		// Initialize keyboard
 		const keyboard = {};
@@ -104,7 +107,7 @@ class Game
 			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"])
 		];
 
-		app.ticker.add(() => {
+		app.ticker.add((delta) => {
 			if (paused) {
 				return;
 			}
@@ -126,12 +129,11 @@ class Game
 			if (leftBot) {
 				leftBot.update(this.paddleLeft, this.ball);
 			}
+			this.paddleLeft.move(keyboard);
 			
 			if (rightBot) {
 				rightBot.update(this.paddleRight, this.ball);
 			}
-			
-			this.paddleLeft.move(keyboard);
 			this.paddleRight.move(keyboard);
 			
 			this.topWall.move(keyboard);
@@ -141,6 +143,8 @@ class Game
 			this.rightBottomWall.move(keyboard);
 			
 			this.ball.move(keyboard, gameObjects);
+
+			this.fct.move(delta)
 
 			this.updateDebugText();
 			this.frameCount++;
@@ -152,6 +156,15 @@ class Game
 		return this.ball;
 	}
 
+	getApp()
+	{
+		return this.app;
+	}
+
+	getFct()
+	{
+		return this.fct;
+	}
 
 	async initRevolt()
 	{
