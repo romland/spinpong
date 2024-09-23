@@ -51,8 +51,13 @@ const POWERUPTYPES = {
             { x : 0, y : 209 },
         ],
         effect: (lastPaddle, ball) => {
-            ball.velocity.x *= 2;
-            ball.velocity.y *= 2;
+            return {
+                newVelocity: {
+                    x : ball.velocity.x * 2,
+                    y : ball.velocity.y * 2,
+                },
+                newSpin : ball.spin * 2,
+            }
         }
     }
 }

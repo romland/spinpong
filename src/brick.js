@@ -51,12 +51,14 @@ export default class Brick extends Eventable
 
     checkCollision(pos, vel, liveCollision = false)
     {
-        const newVel = this.shape.checkCollision(pos, vel, CONFIG.ball.radius);
-        if(liveCollision && newVel) {
+        const newVelocity = this.shape.checkCollision(pos, vel, CONFIG.ball.radius);
+        if(liveCollision && newVelocity) {
             this.onHit();
         }
 
-        return newVel;
+        return {
+            newVelocity
+        };
     }
 
 

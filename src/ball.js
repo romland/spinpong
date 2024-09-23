@@ -23,8 +23,8 @@ export default class Ball extends Eventable
         this.sprite.x = this.app.view.width / 2;
         this.sprite.y = this.app.view.height / 2;
         this.velocity = {
-            x: CONFIG.ball.initialVel * 1,
-            y: CONFIG.ball.initialVel * 1
+            x: CONFIG.ball.initialVel,
+            y: CONFIG.ball.initialVel
         };
         this.spin = 0;
 
@@ -65,15 +65,14 @@ export default class Ball extends Eventable
         let newSpin = spin;
         let targets = [];
 
-        let tmpVel;
-        // check collision of bricks, powerups etc
+        let collisionResult;
+        // check collision of bricks, powerups, etc
         for(let i = 0; i < gameObjects.length; i++) {
-            // This will NOT return a new spin (not needed yet)
-            tmpVel = gameObjects[i].checkCollision({x,y}, velocity, liveCollision);
-            if(tmpVel) {
+            collisionResult = gameObjects[i].checkCollision({x,y}, velocity, liveCollision);
+            if(collisionResult) {
                 return {
-                    newVelocity: tmpVel,
-                    newSpin: newSpin,
+                    newVelocity: collisionResult.newVelocity,
+                    newSpin: collisionResult.newSpin ? collisionResult.newSpin : newSpin,
                     targets: [gameObjects[i]]
                 };
             }

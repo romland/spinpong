@@ -61,14 +61,14 @@ export default class PowerUp extends Eventable
     {
         const newVel = this.shape.checkCollision(pos, vel, CONFIG.ball.radius);
         if(liveCollision && newVel) {
-            this.onHit();
+            return this.onHit();    // to actually bounce off object, pass in newVel
         }
 
         // return newVel;
         return null;    // never bounce off it.
     }
 
-    onHit()
+    onHit(pos, vel)
     {
         /*
         // explosion
@@ -84,8 +84,13 @@ export default class PowerUp extends Eventable
         console.log("Powerup taken!");
         this.remove();
 
-// TODO: the way this gets called, anything that applies to ball-velocity/spin is ignored
-        this.powerUpType.effect(this.lastPaddle, GAME.getBall());
+// TODO: Need a big fat explanation here (and in config?) explaining that if we want to
+//       change velocity or spin of the ball, we must return it instead of applying it 
+//       directly.
+//
+//       If we don't return it (that is, null), we'll overwrite whatever spin/vel we set
+//       in effect().
+        return this.powerUpType.effect(this.lastPaddle, GAME.getBall());
     }
 
 
