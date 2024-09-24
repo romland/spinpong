@@ -9,6 +9,7 @@ const CONFIG = {
         radius: 10, 
         color: 0xffffff, 
         spinDecayPerFrame: 0.02 / 60,   // N % per frame (TODO: Make game run at fixed framerate)
+        velocityDecayPerFrame: 0.02 / 60,
         spinFactor: 0.1,
         initialVel: 4, 
         defaultSpin: -0.4

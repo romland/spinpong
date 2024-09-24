@@ -207,6 +207,7 @@ class Game
 				position: ${Math.round(this.ball.sprite.x)}, ${Math.round(this.ball.sprite.y)}<br>
 				spin: ${this.ball.spin.toFixed(5)}<br>
 				vel: ${this.ball.velocity.x.toFixed(5)}, ${this.ball.velocity.y.toFixed(5)}<br>
+				speed: ${Math.hypot(this.ball.velocity.x, this.ball.velocity.y).toFixed(2)}
 				<br>
 				frame: ${this.frameCount}<br>
 			</td>

@@ -167,6 +167,12 @@ export default class Ball extends Eventable
 
         newSpin -= newSpin * CONFIG.ball.spinDecayPerFrame;
 
+        // Decay velocity if we are above speed of N.
+        if(Math.abs(Math.hypot(this.velocity.x, this.velocity.y)) > 3) {
+            newVelocity.x -= newVelocity.x * CONFIG.ball.velocityDecayPerFrame;
+            newVelocity.y -= newVelocity.y * CONFIG.ball.velocityDecayPerFrame;
+        }
+
         return {
             newVelocity,
             newSpin,
