@@ -20,7 +20,7 @@ export default class FollowBot
 	{
 		if(this.headingToMe(paddle, ball)) {
 			// move to ball's y (another bot could go to actual predicted position instead)
-			this.targetY = ball.sprite.y - (CONFIG.paddle.height / 2);
+			this.targetY = ball.sprite.y - (paddle.sprite.height / 2);
 			
 			if(Math.abs(this.targetY - paddle.sprite.y) <= CONFIG.paddle.speed) {
 				paddle.setPosition(paddle.sprite.x, this.targetY)
@@ -29,7 +29,7 @@ export default class FollowBot
 			}
 		} else {
 			// move to center y
-			this.targetY = PIXICONFIG.height / 2 - (CONFIG.paddle.height / 2);
+			this.targetY = PIXICONFIG.height / 2 - (paddle.sprite.height / 2);
 			
 			if(Math.abs(this.targetY - paddle.sprite.y) <= CONFIG.paddle.speed) {
 				paddle.setPosition(paddle.sprite.x, this.targetY)

@@ -44,10 +44,10 @@ export default class PredictPositionBot
 		// }
 
 		if(isWithinRange(this.paddle.sprite.x, prevX, x)) {
-			// if(!isWithinRange(this.paddle.sprite.y + CONFIG.paddle.height/2, y - CONFIG.paddle.speed, y + CONFIG.paddle.speed)) {
+			// if(!isWithinRange(this.paddle.sprite.y + this.paddle.sprite.height/2, y - CONFIG.paddle.speed, y + CONFIG.paddle.speed)) {
 				// Only take first match of a frame.
 				if(this.lastUsedFrame !== window.GAME.frameCount) {
-					this.targetY = y - CONFIG.paddle.height / 2 + CONFIG.ball.radius;
+					this.targetY = y - this.paddle.sprite.height / 2 + CONFIG.ball.radius;
 					this.usePredicted = false;
 					this.lastUsedFrame = window.GAME.frameCount;
 				}

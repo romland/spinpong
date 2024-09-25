@@ -56,14 +56,14 @@ class Game
 		}
 		
 		
-		this.paddleLeft = new Paddle(app, CONFIG.paddle.offsetX, app.view.height / 2 - CONFIG.paddle.height / 2, {
+		this.paddleLeft = new Paddle(app, CONFIG.paddle.offsetX, app.view.height / 2, {
 			up: 'KeyW',
 			down: 'KeyS',
 			incSurfaceSpeed: 'KeyD',
 			decSurfaceSpeed: 'KeyE'
 		});
 
-		this.paddleRight = new Paddle(app, app.view.width - CONFIG.paddle.offsetX - CONFIG.paddle.width, app.view.height / 2 - CONFIG.paddle.height / 2, {
+		this.paddleRight = new Paddle(app, app.view.width - CONFIG.paddle.offsetX - CONFIG.paddle.width, app.view.height / 2, {
 			up: 'Numpad8',
 			down: 'Numpad5',
 			incSurfaceSpeed: 'Numpad6',
@@ -97,14 +97,15 @@ class Game
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
 		let gameObjects = [
-			// new BrickSet(app, 300, 200).createFromMatrix(
-			// 	"1 1 111\n" +
-			// 	"111  1 \n" +
-			// 	"1 1 111\n" +
-			// 	""
-			// ),
-			// new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["faster-ball"]),
-			// new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"])
+			new BrickSet(app, 300, 200).createFromMatrix(
+				"1 1 111\n" +
+				"111  1 \n" +
+				"1 1 111\n" +
+				""
+			),
+			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["faster-ball"]),
+			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"]),
+			new PowerUp(app, this.ball, 200, 300, POWERUPTYPES["bigger-paddle"]),
 		];
 
 		app.ticker.add((delta) => {

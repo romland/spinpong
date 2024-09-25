@@ -34,11 +34,13 @@ export default class Paddle extends Eventable
         this.bottomSprite.y = this.topSprite.height + this.midSprite.height;
         this.spriteContainer.addChild(this.bottomSprite);
 
-        this.spriteContainer.height = CONFIG.paddle.height;
+        this.spriteContainer.height = CONFIG.paddle.defaultHeight;
         this.sprite = this.spriteContainer;
 
         this.sprite.x = x;
-        this.sprite.y = y;
+
+        // Passed in Y is meant to be for center of bat (i.e. screen height / 2).
+        this.sprite.y = y - this.spriteContainer.height / 2;
 
         this.sprite.filters = [
             new PIXI.filters.DropShadowFilter({
@@ -61,16 +63,17 @@ export default class Paddle extends Eventable
 
 
     // TODO:
-    resizeMiddleSegment(newHeight) {
+    resizeMiddleSegment(newHeight)
+    {
         this.midSprite.height = newHeight;
-        this.topSprite.y = this.bottomSprite.height + this.midSprite.height; // Adjust top segment position
+        this.bottomSprite.y = this.topSprite.height + this.midSprite.height;
     }
 
     
     initSurface() {
         this.surface = new PIXI.Graphics();
         // this.surface.beginFill(0x000000);
-        this.surface.drawRoundedRect(-1, 0, CONFIG.paddle.width + 5, CONFIG.paddle.height + 4, 5);
+        this.surface.drawRoundedRect(-1, 0, CONFIG.paddle.width + 5, this.sprite.height + 4, 5);
         this.surface.endFill();
         this.surface.position.set(this.sprite.x - 2, this.sprite.y - 2);
         
@@ -118,12 +121,11 @@ export default class Paddle extends Eventable
         let targets = [];
 
         if(
-            // velocity.x < 0 &&   // do this to prevent ball getting stuck in bat (TODO: improve this)
-            ((this.isLeftBat() && velocity.x < 0) || (!this.isLeftBat() && velocity.x > 0)) &&
+            ((this.isLeftBat() && velocity.x < 0) || (!this.isLeftBat() && velocity.x > 0)) && // do this to prevent ball getting stuck in bat (TODO: improve this)
             x <= this.sprite.x + CONFIG.paddle.width + CONFIG.ball.radius &&
             x > this.sprite.x - CONFIG.ball.radius &&
             y >= this.sprite.y - CONFIG.ball.radius &&
-            y <= this.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius
+            y <= this.sprite.y + this.sprite.height + CONFIG.ball.radius
         ) {
             newVelocity.x *= -1;
             newSpin += this.surfaceSpeed;
@@ -148,8 +150,8 @@ export default class Paddle extends Eventable
             (
                 // bottom
                 velocity.y < 0 &&
-                y >= this.sprite.y + CONFIG.paddle.height - CONFIG.ball.radius 
-                && y <= this.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius 
+                y >= this.sprite.y + this.sprite.height - CONFIG.ball.radius 
+                && y <= this.sprite.y + this.sprite.height + CONFIG.ball.radius 
                 && x >= this.sprite.x && x <= this.sprite.x + CONFIG.paddle.width
             )
         ) {
@@ -196,8 +198,8 @@ export default class Paddle extends Eventable
         }
         
         // Cap bottom of Y axis
-        if((this.sprite.y + CONFIG.paddle.height) > (this.app.view.height - CONFIG.walls.height)) {
-            this.sprite.y = this.app.view.height - CONFIG.walls.height - CONFIG.paddle.height;
+        if((this.sprite.y + this.sprite.height) > (this.app.view.height - CONFIG.walls.height)) {
+            this.sprite.y = this.app.view.height - CONFIG.walls.height - this.sprite.height;
         }
         
         this.surface.position.set(this.sprite.x - 2, this.sprite.y - 2);
@@ -212,7 +214,7 @@ export default class Paddle extends Eventable
         this.spinIndicators.forEach(indicator => {
             indicator.angle += this.surfaceSpeed;
             indicator.x = this.sprite.x + CONFIG.paddle.width / 2 + (CONFIG.paddle.width) * Math.cos(indicator.angle);
-            indicator.y = this.sprite.y + CONFIG.paddle.height / 2 + (CONFIG.paddle.height / 2 * 1.15) * Math.sin(indicator.angle);
+            indicator.y = this.sprite.y + this.sprite.height / 2 + (this.sprite.height / 2 * 1.15) * Math.sin(indicator.angle);
         });
     }
 }

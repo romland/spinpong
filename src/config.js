@@ -16,7 +16,7 @@ const CONFIG = {
     },
     paddle: {
         width: 10,
-        height: 80,
+        defaultHeight: 80,
         color: 0xff0000,
         speed: 10,
         surfaceSpeedFactor: 0.001, offsetX : 50
@@ -78,7 +78,7 @@ const POWERUPTYPES = {
             { x : 0,   y : 0   },
             { x : 256, y : 0   },
             { x : 256, y : 209 },
-            { x : 0, y : 209 },
+            { x : 0,   y : 209 },
         ],
         effect: (lastPaddle, ball) => {
             return {
@@ -88,6 +88,29 @@ const POWERUPTYPES = {
                 },
                 newSpin : ball.spin / 2,
             }
+        }
+    },
+    "bigger-paddle" : {
+        text: "BIGGER",
+        graphic: './assets/powerup01-256x209.png',
+        width: 256,
+        height: 209,
+        scale : 0.2,
+        vertices: [
+            { x : 0,   y : 0   },
+            { x : 256, y : 0   },
+            { x : 256, y : 209 },
+            { x : 0,   y : 209 },
+        ],
+        // TODO: Need support for timer and undoEffect
+        effect: (lastPaddle, ball) => {
+            if(lastPaddle) {
+                lastPaddle.resizeMiddleSegment(200);
+                console.log("bigger-paddle -- assigned");
+            } else {
+                console.log("bigger-paddle -- no lastPaddle");
+            }
+            return null;
         }
     }
 }
