@@ -59,6 +59,7 @@ TODO thoughts:
   number of knocks should count _down_ using some floating text (so... e.g. 10->9-> ...)
 - get point for each brick you remove? (you = last paddle to touch ball)
 - use generated generative cartoon characters for power-ups (i.e. a guy running for faster ball, etc)
+- on "death": lightning from where ball slipped through to the bat -- and bat blows up
 
 Achievement tracking:
 - highest velocity ball returned

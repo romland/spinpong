@@ -97,14 +97,14 @@ class Game
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
 		let gameObjects = [
-			new BrickSet(app, 300, 200).createFromMatrix(
-				"1 1 111\n" +
-				"111  1 \n" +
-				"1 1 111\n" +
-				""
-			),
-			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["faster-ball"]),
-			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"])
+			// new BrickSet(app, 300, 200).createFromMatrix(
+			// 	"1 1 111\n" +
+			// 	"111  1 \n" +
+			// 	"1 1 111\n" +
+			// 	""
+			// ),
+			// new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["faster-ball"]),
+			// new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"])
 		];
 
 		app.ticker.add((delta) => {

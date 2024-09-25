@@ -100,69 +100,16 @@ export default class Ball extends Eventable
             targets.push(this.rightBottomWall);
         }
 
-        // Left paddle collision
-        if(
-            velocity.x < 0 && 
-            x <= this.paddleLeft.sprite.x + CONFIG.paddle.width + CONFIG.ball.radius &&
-            x > this.paddleLeft.sprite.x - CONFIG.ball.radius &&
-            y >= this.paddleLeft.sprite.y - CONFIG.ball.radius &&
-            y <= this.paddleLeft.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius
-        ) {
-            newVelocity.x *= -1;
-            newSpin += this.paddleLeft.surfaceSpeed;
-            targets.push(this.paddleLeft);
+        if(collisionResult = this.paddleLeft.checkCollision(x, y, velocity, spin, liveCollision)) {
+            newVelocity = collisionResult.newVelocity;
+            newSpin = collisionResult.newSpin;
+            targets.push(...collisionResult.targets);
         }
 
-        // Right paddle collision
-        if(
-            velocity.x > 0 && 
-            x >= this.paddleRight.sprite.x - CONFIG.ball.radius &&
-            x <= this.paddleRight.sprite.x + CONFIG.ball.radius &&
-            y >= this.paddleRight.sprite.y - CONFIG.ball.radius &&
-            y <= this.paddleRight.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius
-        ) {
-            newVelocity.x *= -1;
-            newSpin += this.paddleRight.surfaceSpeed;
-            targets.push(this.paddleRight);
-        }
-
-        // Paddle top and bottom collision
-        if (
-            (
-                // left top
-                velocity.y > 0 &&
-                y <= this.paddleLeft.sprite.y + CONFIG.ball.radius
-                && y >= this.paddleLeft.sprite.y - CONFIG.ball.radius
-                && x >= this.paddleLeft.sprite.x && x <= this.paddleLeft.sprite.x + CONFIG.paddle.width
-            ) ||
-            (
-                // left bottom
-                velocity.y < 0 &&
-                y >= this.paddleLeft.sprite.y + CONFIG.paddle.height - CONFIG.ball.radius 
-                && y <= this.paddleLeft.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius 
-                && x >= this.paddleLeft.sprite.x && x <= this.paddleLeft.sprite.x + CONFIG.paddle.width
-            ) ||
-            (
-                // right top
-                velocity.y > 0 &&
-                y <= this.paddleRight.sprite.y + CONFIG.ball.radius 
-                && y >= this.paddleRight.sprite.y - CONFIG.ball.radius 
-                && x >= this.paddleRight.sprite.x 
-                && x <= this.paddleRight.sprite.x + CONFIG.paddle.width
-            ) ||
-            (
-                // right bottom
-                velocity.y < 0 &&
-                y >= this.paddleRight.sprite.y + CONFIG.paddle.height - CONFIG.ball.radius
-                && y <= this.paddleRight.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius
-                && x >= this.paddleRight.sprite.x && x <= this.paddleRight.sprite.x + CONFIG.paddle.width
-            )
-        ) {
-            newVelocity.y *= -1;
-            newSpin += y <= this.paddleLeft.sprite.y + CONFIG.ball.radius ? this.paddleLeft.surfaceSpeed : this.paddleRight.surfaceSpeed;
-            targets.push(
-                (x < this.app.view.width / 2 ? this.paddleLeft : this.paddleRight)
-            );
+        if(collisionResult = this.paddleRight.checkCollision(x, y, velocity, spin, liveCollision)) {
+            newVelocity = collisionResult.newVelocity;
+            newSpin = collisionResult.newSpin;
+            targets.push(...collisionResult.targets);
         }
 
         newSpin -= newSpin * CONFIG.ball.spinDecayPerFrame;

@@ -1,19 +1,41 @@
-import { CONFIG } from "./config.js";
+import { PIXICONFIG, CONFIG } from "./config.js";
 import Eventable from "./eventable.js";
 
 export default class Paddle extends Eventable
 {
-    constructor(app, x, y, controls) {
+    constructor(app, x, y, controls)
+    {
         super();
 
         this.app = app;
 
+        // Create container to hold the three sprites
+        this.spriteContainer = new PIXI.Container();
+        this.app.stage.addChild(this.spriteContainer);
 
-        // bitmap
-        this.sprite = PIXI.Sprite.from('./assets/paddle03.png');
-        this.sprite.anchor.set(0,0);
-        this.sprite.width = CONFIG.paddle.width;
-        this.sprite.height = CONFIG.paddle.height;
+        // top sprite
+        this.topSprite = PIXI.Sprite.from('./assets/paddle03-top.png');
+        this.topSprite.anchor.set(0, 0);
+        this.topSprite.width = CONFIG.paddle.width;
+        this.topSprite.y = 0;
+        this.spriteContainer.addChild(this.topSprite);
+
+        // middle sprite
+        this.midSprite = PIXI.Sprite.from('./assets/paddle03-mid.png');
+        this.midSprite.anchor.set(0, 0);
+        this.midSprite.width = CONFIG.paddle.width;
+        this.midSprite.y = this.topSprite.height;
+        this.spriteContainer.addChild(this.midSprite);
+
+        // bottom sprite
+        this.bottomSprite = PIXI.Sprite.from('./assets/paddle03-bottom.png');
+        this.bottomSprite.anchor.set(0, 0);
+        this.bottomSprite.width = CONFIG.paddle.width;
+        this.bottomSprite.y = this.topSprite.height + this.midSprite.height;
+        this.spriteContainer.addChild(this.bottomSprite);
+
+        this.spriteContainer.height = CONFIG.paddle.height;
+        this.sprite = this.spriteContainer;
 
         this.sprite.x = x;
         this.sprite.y = y;
@@ -31,13 +53,19 @@ export default class Paddle extends Eventable
 
         this.surfaceSpeed = 0;
         this.controls = controls;
-        
 
         this.spinIndicators = [];
         this.initSurface();
         this.app.stage.addChild(this.sprite);
-        
     }
+
+
+    // TODO:
+    resizeMiddleSegment(newHeight) {
+        this.midSprite.height = newHeight;
+        this.topSprite.y = this.bottomSprite.height + this.midSprite.height; // Adjust top segment position
+    }
+
     
     initSurface() {
         this.surface = new PIXI.Graphics();
@@ -74,6 +102,69 @@ export default class Paddle extends Eventable
         this.sprite.y = y;
 
         this.notifyListeners("onMoved", this, this.sprite.x, this.sprite.y);
+    }
+
+    isLeftBat()
+    {
+        return this.sprite.x < (PIXICONFIG.width/2);
+    }
+
+    checkCollision(x, y, velocity, spin, liveCollision)
+    {
+        let newVelocity = {
+            ...velocity
+        };
+        let newSpin = spin;
+        let targets = [];
+
+        if(
+            // velocity.x < 0 &&   // do this to prevent ball getting stuck in bat (TODO: improve this)
+            ((this.isLeftBat() && velocity.x < 0) || (!this.isLeftBat() && velocity.x > 0)) &&
+            x <= this.sprite.x + CONFIG.paddle.width + CONFIG.ball.radius &&
+            x > this.sprite.x - CONFIG.ball.radius &&
+            y >= this.sprite.y - CONFIG.ball.radius &&
+            y <= this.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius
+        ) {
+            newVelocity.x *= -1;
+            newSpin += this.surfaceSpeed;
+            targets.push(this);
+
+            return {
+                newVelocity,
+                newSpin,
+                targets
+            };
+        }
+
+        // Paddle top and bottom collision
+        if (
+            (
+                // top
+                velocity.y > 0 &&
+                y <= this.sprite.y + CONFIG.ball.radius
+                && y >= this.sprite.y - CONFIG.ball.radius
+                && x >= this.sprite.x && x <= this.sprite.x + CONFIG.paddle.width
+            ) ||
+            (
+                // bottom
+                velocity.y < 0 &&
+                y >= this.sprite.y + CONFIG.paddle.height - CONFIG.ball.radius 
+                && y <= this.sprite.y + CONFIG.paddle.height + CONFIG.ball.radius 
+                && x >= this.sprite.x && x <= this.sprite.x + CONFIG.paddle.width
+            )
+        ) {
+            newVelocity.y *= -1;
+            newSpin += this.surfaceSpeed;
+            targets.push(this);
+
+            return {
+                newVelocity,
+                newSpin,
+                targets
+            };
+        }
+
+        return null;
     }
 
     move(keyboard) {
