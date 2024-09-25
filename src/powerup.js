@@ -1,6 +1,7 @@
 import CollisionShape from "./collisionshape.js"
 import Eventable from "./eventable.js";
 import { CONFIG } from "./config.js";
+import { Actions, Interpolations } from './libs/pixi-actions/index.js';
 
 export default class PowerUp extends Eventable
 {

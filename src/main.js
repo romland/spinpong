@@ -1,4 +1,4 @@
-import { CONFIG, PIXICONFIG, POWERUPTYPES } from "./config.js";
+import { CONFIG, DEFAULT_KEYBOARD, PIXICONFIG, POWERUPTYPES } from "./config.js";
 import Ball from "./ball.js";
 import Paddle from "./paddle.js";
 import Wall from "./wall.js";
@@ -7,6 +7,8 @@ import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
 import PowerUp from "./powerup.js";
 import { FloatingCombatTextManager } from "./floatingcombattext.js"
+
+import { Actions } from './libs/pixi-actions/index.js';
 
 class Game
 {
@@ -26,18 +28,20 @@ class Game
 			await app.init(PIXICONFIG);
 		}
 
-		// console.log("hm", this.app.stage)
-		// this.stage = new PIXI.Container();
 		document.body.appendChild(app.view);
 		
 		await this.initRevolt();
+
+		// Interpolation library
+		// TODO: Don't actually want a separate ticker for it -- this should also pause with pause
+		app.ticker.add((delta) => Actions.tick(delta/60));
 
 		this.fct = new FloatingCombatTextManager();
 
 		// Initialize keyboard
 		const keyboard = {};
 		window.addEventListener('keydown', (e) => {
-			if (e.code === "KeyP") {
+			if (e.code === DEFAULT_KEYBOARD.pause) {
 				togglePause();
 			}
 			
@@ -55,45 +59,20 @@ class Game
 			paused = !paused;
 		}
 		
-		
-		this.paddleLeft = new Paddle(app, CONFIG.paddle.offsetX, app.view.height / 2, {
-			up: 'KeyW',
-			down: 'KeyS',
-			incSurfaceSpeed: 'KeyD',
-			decSurfaceSpeed: 'KeyE'
-		});
 
-		this.paddleRight = new Paddle(app, app.view.width - CONFIG.paddle.offsetX - CONFIG.paddle.width, app.view.height / 2, {
-			up: 'Numpad8',
-			down: 'Numpad5',
-			incSurfaceSpeed: 'Numpad6',
-			decSurfaceSpeed: 'Numpad9'
-		});
-		
 		// Player 1
-		this.topWall = new Wall(app, 0, 0, (app.view.width / 2) - 3, {
-			incSurfaceSpeed: 'KeyQ',
-			decSurfaceSpeed: 'KeyR'
-		});
-		this.bottomWall = new Wall(app, 0, app.view.height - CONFIG.walls.height, (app.view.width / 2) - 3, {
-			incSurfaceSpeed: 'KeyQ',
-			decSurfaceSpeed: 'KeyR'
-		});
-		
+		this.paddleLeft = new Paddle(app, CONFIG.paddle.offsetX, app.view.height / 2, DEFAULT_KEYBOARD.leftPlayer.paddle);
+		this.topWall = new Wall(app, 0, 0, (app.view.width / 2) - 3, DEFAULT_KEYBOARD.leftPlayer.walls.top);
+		this.bottomWall = new Wall(app, 0, app.view.height - CONFIG.walls.height, (app.view.width / 2) - 3, DEFAULT_KEYBOARD.leftPlayer.walls.bottom);
+
 		// Player 2
-		this.rightTopWall = new Wall(app, (app.view.width / 2) + 3, 0, app.view.width / 2, {
-			incSurfaceSpeed: 'Numpad1',
-			decSurfaceSpeed: 'Numpad3'
-		});
-		this.rightBottomWall = new Wall(app, (app.view.width / 2) + 3, app.view.height - CONFIG.walls.height, app.view.width / 2, {
-			incSurfaceSpeed: 'Numpad1',
-			decSurfaceSpeed: 'Numpad3'
-		});
+		this.paddleRight = new Paddle(app, app.view.width - CONFIG.paddle.offsetX - CONFIG.paddle.width, app.view.height / 2, DEFAULT_KEYBOARD.rightPlayer.paddle);
+		this.rightTopWall = new Wall(app, (app.view.width / 2) + 3, 0, app.view.width / 2, DEFAULT_KEYBOARD.rightPlayer.walls.top);
+		this.rightBottomWall = new Wall(app, (app.view.width / 2) + 3, app.view.height - CONFIG.walls.height, app.view.width / 2, DEFAULT_KEYBOARD.rightPlayer.walls.bottom);
 		
 		this.ball = new Ball(app, this.paddleLeft, this.paddleRight, this.topWall, this.bottomWall, this.rightTopWall, this.rightBottomWall);
 		
 		let leftBot = new FollowBot(this.paddleLeft);
-		// let rightBot = new FollowBot(this.paddleRight);
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
 		
 		let gameObjects = [
@@ -103,9 +82,9 @@ class Game
 				"1 1 111\n" +
 				""
 			),
-			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["faster-ball"]),
-			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["slower-ball"]),
-			new PowerUp(app, this.ball, 200, 300, POWERUPTYPES["bigger-paddle"]),
+			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["faster-ball"]),
+			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["bigger-paddle"]),
+			new PowerUp(app, this.ball, 200, 300, POWERUPTYPES["slower-ball"]),
 		];
 
 		app.ticker.add((delta) => {
@@ -165,6 +144,11 @@ class Game
 	getFct()
 	{
 		return this.fct;
+	}
+
+	getActions()
+	{
+		return Actions;
 	}
 
 	async initRevolt()

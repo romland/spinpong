@@ -1,5 +1,6 @@
 import { PIXICONFIG, CONFIG } from "./config.js";
 import Eventable from "./eventable.js";
+import { Actions, Interpolations } from './libs/pixi-actions/index.js';
 
 export default class Paddle extends Eventable
 {
@@ -61,18 +62,26 @@ export default class Paddle extends Eventable
         this.app.stage.addChild(this.sprite);
     }
 
-
     // TODO:
-    resizeMiddleSegment(newHeight)
+    /*
+    Interpolations.linear = (x) => x;
+    Interpolations.smooth = (x) => x * x * (3 - 2 * x);
+    Interpolations.smooth2 = (x) => Interpolations.smooth(Interpolations.smooth(x));
+    Interpolations.smoother = (a) => a * a * a * (a * (a * 6 - 15) + 10);
+    Interpolations.fade = Interpolations.smoother;
+    Interpolations.pow2out = (x) => Math.pow(x - 1, 2) * (-1) + 1;
+    */
+    resizeMiddleSegment(newYscale)
     {
-        this.midSprite.height = newHeight;
-        this.bottomSprite.y = this.topSprite.height + this.midSprite.height;
+        Actions.parallel(
+            Actions.scaleTo(this.midSprite, this.midSprite.scale.x, newYscale, 1, Interpolations.smoother ),
+            Actions.moveTo(this.bottomSprite, this.bottomSprite.x, this.topSprite.height + (this.midSprite.height * newYscale), 1, Interpolations.smoother),
+        ).play();
     }
 
     
     initSurface() {
         this.surface = new PIXI.Graphics();
-        // this.surface.beginFill(0x000000);
         this.surface.drawRoundedRect(-1, 0, CONFIG.paddle.width + 5, this.sprite.height + 4, 5);
         this.surface.endFill();
         this.surface.position.set(this.sprite.x - 2, this.sprite.y - 2);

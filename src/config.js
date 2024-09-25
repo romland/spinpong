@@ -25,6 +25,49 @@ const CONFIG = {
     debug: { trajectoryColor: 0xffff00, trajectoryWidth: 1 }
 };
 
+const DEFAULT_KEYBOARD = {
+    pause : "KeyP",
+    leftPlayer : {
+        paddle :
+        {
+            up: 'KeyW',
+            down: 'KeyS',
+            incSurfaceSpeed: 'KeyD',
+            decSurfaceSpeed: 'KeyE'
+        },
+        walls  : {
+            top : {
+                incSurfaceSpeed: 'KeyQ',
+                decSurfaceSpeed: 'KeyR'
+            },
+            bottom :{
+                incSurfaceSpeed: 'KeyQ',
+                decSurfaceSpeed: 'KeyR'
+            }
+        }
+    },
+    rightPlayer : {
+        paddle : {
+			up: 'Numpad8',
+			down: 'Numpad5',
+			incSurfaceSpeed: 'Numpad6',
+			decSurfaceSpeed: 'Numpad9'
+		},
+        walls  : {
+            top : {
+                incSurfaceSpeed: 'Numpad1',
+                decSurfaceSpeed: 'Numpad3'
+            },
+            bottom : {
+                incSurfaceSpeed: 'Numpad1',
+                decSurfaceSpeed: 'Numpad3'
+            }
+        }
+    }
+
+
+}
+
 const BRICKTYPES = {
     "1" : {
         graphic: './assets/brick02-132x256.png',
@@ -105,15 +148,14 @@ const POWERUPTYPES = {
         // TODO: Need support for timer and undoEffect
         effect: (lastPaddle, ball) => {
             if(lastPaddle) {
-                lastPaddle.resizeMiddleSegment(200);
-                console.log("bigger-paddle -- assigned");
+                lastPaddle.resizeMiddleSegment(2);
             } else {
-                console.log("bigger-paddle -- no lastPaddle");
+                console.warn("bigger-paddle: no lastPaddle");
             }
             return null;
         }
     }
 }
 
-export { CONFIG, PIXICONFIG, BRICKTYPES, POWERUPTYPES };
+export { CONFIG, PIXICONFIG, BRICKTYPES, POWERUPTYPES, DEFAULT_KEYBOARD };
 export default CONFIG;

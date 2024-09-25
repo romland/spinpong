@@ -78,22 +78,23 @@ export default class Ball extends Eventable
             }
         }
 
-        if (y <= CONFIG.walls.height + CONFIG.ball.radius && x <= this.app.view.width / 2) {
+        // TODO: Move to wall.js
+        if (velocity.y < 0 && y <= CONFIG.walls.height + CONFIG.ball.radius && x <= this.app.view.width / 2) {
             // Left upper wall
             newVelocity.y *= -1;
             newSpin += this.topWall.surfaceSpeed;
             targets.push(this.topWall);
-        } else if (y >= this.app.view.height - CONFIG.walls.height - CONFIG.ball.radius && x <= this.app.view.width / 2) {
+        } else if (velocity.y > 0 && y >= this.app.view.height - CONFIG.walls.height - CONFIG.ball.radius && x <= this.app.view.width / 2) {
             // Left lower wall
             newVelocity.y *= -1;
             newSpin += this.bottomWall.surfaceSpeed;
             targets.push(this.bottomWall);
-        } else if (y <= CONFIG.walls.height + CONFIG.ball.radius && x >= this.app.view.width / 2) {
+        } else if (velocity.y < 0 && y <= CONFIG.walls.height + CONFIG.ball.radius && x >= this.app.view.width / 2) {
             // Right upper wall
             newVelocity.y *= -1;
             newSpin += this.rightTopWall.surfaceSpeed;
             targets.push(this.rightTopWall);
-        } else if (y >= this.app.view.height - CONFIG.walls.height - CONFIG.ball.radius && x >= this.app.view.width / 2) {
+        } else if (velocity.y > 0 && y >= this.app.view.height - CONFIG.walls.height - CONFIG.ball.radius && x >= this.app.view.width / 2) {
             // Right lower wall
             newVelocity.y *= -1;
             newSpin += this.rightBottomWall.surfaceSpeed;
