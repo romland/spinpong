@@ -79,7 +79,7 @@ class Game
 				"1 1 111\n" +
 				""
 			),
-			new PowerUp(app, this.ball, 400, 440, POWERUPTYPES["faster-ball"]),
+			new PowerUp(app, this.ball, 200,  60, POWERUPTYPES["faster-ball"]),
 			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["bigger-paddle"]),
 			new PowerUp(app, this.ball, 200, 300, POWERUPTYPES["slower-ball"]),
 		];
