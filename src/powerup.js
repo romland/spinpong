@@ -64,7 +64,6 @@ export default class PowerUp extends Eventable
 
     onPaddleCollision(paddle)
     {
-        console.log("Paddle hit:", paddle);
         this.lastPaddle = paddle;
     }
 

@@ -27,6 +27,7 @@ export default class Ball extends Eventable
             y: CONFIG.ball.initialVel
         };
         this.spin = 0;
+        this.dead = true;
 
         this.sprite.filters = [
             new PIXI.filters.DropShadowFilter({
@@ -55,6 +56,11 @@ export default class Ball extends Eventable
         this.spin = CONFIG.ball.defaultSpin;
 
         this.gameStarted = false;
+    }
+
+    isDead()
+    {
+        return this.dead;
     }
 
     checkCollision(x, y, velocity, spin, gameObjects, liveCollision = false)
@@ -128,9 +134,14 @@ export default class Ball extends Eventable
         };
     }
 
-    move(keyboard, gameObjects) {
+    move(keyboard, gameObjects)
+    {
+        if(this.isDead()) {
+            return;
+        }
+
         if(!this.gameStarted) {
-            this.notifyListeners("onBallReset", this.sprite.x, this.sprite.y, this.sprite.x, this.sprite.y);
+            this.notifyListeners("onGameStarted", this.sprite.x, this.sprite.y);
             this.gameStarted = true;
         }
 
@@ -159,19 +170,8 @@ export default class Ball extends Eventable
 
         // Ball lost
         if (this.sprite.x <= CONFIG.ball.radius || this.sprite.x >= this.app.view.width - CONFIG.ball.radius) {
-            let prevX = this.sprite.x;
-            let prevY = this.sprite.y;
-
-            // Reset me
-            this.sprite.x = (this.app.view.width / 2) - CONFIG.ball.radius;
-            this.sprite.y = (this.app.view.height / 2) - CONFIG.ball.radius;
-            this.velocity = {
-                x: CONFIG.ball.initialVel,
-                y: CONFIG.ball.initialVel
-            };
-            this.spin = CONFIG.ball.defaultSpin;
-
-            this.notifyListeners("onBallReset", this.sprite.x, this.sprite.y, prevX, prevY);
+            this.dead = true;
+            this.notifyListeners("onBallLost", this.sprite.x, this.sprite.y);
         }
     }
 

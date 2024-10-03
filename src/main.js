@@ -42,7 +42,7 @@ class Game
 		const keyboard = {};
 		window.addEventListener('keydown', (e) => {
 			if (e.code === DEFAULT_KEYBOARD.pause) {
-				togglePause();
+				this.togglePause();
 			}
 			
 			keyboard[e.code] = true;
@@ -52,13 +52,8 @@ class Game
 		});
 		
 		
-		let paused = false;
+		this.paused = false;
 		this.frameCount = 0;
-
-		function togglePause() {
-			paused = !paused;
-		}
-		
 
 		// Player 1
 		this.paddleLeft = new Paddle(app, CONFIG.paddle.offsetX, app.view.height / 2, DEFAULT_KEYBOARD.leftPlayer.paddle);
@@ -71,6 +66,8 @@ class Game
 		this.rightBottomWall = new Wall(app, (app.view.width / 2) + 3, app.view.height - CONFIG.walls.height, app.view.width / 2, DEFAULT_KEYBOARD.rightPlayer.walls.bottom);
 		
 		this.ball = new Ball(app, this.paddleLeft, this.paddleRight, this.topWall, this.bottomWall, this.rightTopWall, this.rightBottomWall);
+		this.ball.registerListener("onBallLost", (args) => this.onBallLost(...args));
+
 		
 		let leftBot = new FollowBot(this.paddleLeft);
 		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
@@ -88,7 +85,7 @@ class Game
 		];
 
 		app.ticker.add((delta) => {
-			if (paused) {
+			if (this.paused) {
 				return;
 			}
 
@@ -129,6 +126,44 @@ class Game
 			this.updateDebugText();
 			this.frameCount++;
 		});
+
+		this.launchBall(0);
+	}
+
+
+	cleanUp()
+	{
+		// TODO: implement cleanUp() in all game objects, call them all from here...
+	}
+
+	onBallLost(ballX, ballY)
+	{
+		// TODO: Score keeping
+
+		console.log("Ball lost...");
+		this.launchBall(1000);
+	}
+
+	launchBall(wait = 1000)
+	{
+		this.ball.sprite.x = (this.app.view.width / 2) - CONFIG.ball.radius;
+		this.ball.sprite.y = (this.app.view.height / 2) - CONFIG.ball.radius;
+		this.ball.velocity = {
+			x: CONFIG.ball.initialVel,
+			y: CONFIG.ball.initialVel
+		};
+		this.ball.spin = CONFIG.ball.defaultSpin;
+		// TODO: reset everything else too (paddles/walls/bots)
+
+		setTimeout(() => {
+			console.log("Launching ball...");
+			this.ball.dead = false;
+			this.ball.gameStarted = false;
+		}, wait);
+	}
+
+	togglePause() {
+		this.paused = !this.paused;
 	}
 
 	getBall()

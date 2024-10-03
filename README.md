@@ -17,14 +17,14 @@ Notes:
 
 /*
 TODO power-ups/downs:
-- slow ball
-- fast ball
+[x] slow ball
+[x] fast ball
+[x] reset ball spin and velocity (add some art in the middle of the field, and when ball hits, trigger effect)
+[x] larger bat
+[x] smaller opponent bat
 - multiple balls
-- larger bat
-- smaller opponent bat
 - freeze opponent wall
 - freeze ball for N seconds (to adjust spin)
-- reset ball spin and velocity (add some art in the middle of the field, and when ball hits, trigger effect)
 - magnets (attracts ball and/or paddles depending on placement)
 - upgrade paddle (to ... things -- get different art)
 - ball shrinks every collision (winner is last paddle to touch it before it disintegrates)
@@ -32,7 +32,7 @@ TODO power-ups/downs:
 
 FIXES:
 - perhaps only draw prediction until 'dead' or 'next paddle hit' (and not several paddle hits)
-- spin-decay: spin of the ball should decrease over time (or at least per bounce?)
+[x] spin-decay: spin of the ball should decrease over time (or at least per bounce?)
 
 IDEAS:
 - maybe a brickwall between the bats appear that then one player will have to knock a hole in to get ball over 
@@ -60,10 +60,16 @@ TODO thoughts:
 - get point for each brick you remove? (you = last paddle to touch ball)
 - use generated generative cartoon characters for power-ups (i.e. a guy running for faster ball, etc)
 - on "death": lightning from where ball slipped through to the bat -- and bat blows up
+- TODO: Need support for TTL and undoEffect in powerUp config. Also:
+  "drop-chance"
+
+BUG:
+- a really fast ball will go 'through' the paddle (need same fix as elsewhere)
 
 Achievement tracking:
 - highest velocity ball returned
 - highest velocity ball won
 - number of paddle exchanges survived (left->right->leftt)
+- own goal (paddle -> lost)
 */
 ```

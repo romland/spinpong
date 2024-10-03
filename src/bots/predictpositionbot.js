@@ -9,40 +9,10 @@ export default class PredictPositionBot
 		this.targetY = PIXICONFIG.height / 2;
 		this.lastUsedFrame = -1;		// Last frame we moved
 		ball.registerListener("onPositionPredicted", (args) => this.onPositionPredicted(...args));
-		
-/*
-		this.usePredicted = false;		// Prevent us from calculate a move if nothing has changed.
-		ball.registerCallback("onCollision", (args) => this.onCollision(...args));
-		ball.registerCallback("onBallReset", (args) => this.onBallReset(...args));
-		otherPaddle.registerCallback("onMoved", (args) => this.onOtherPaddleMoved(...args));
-*/
-	}
-/*	
-	onBallReset(x, y, prevX, prevY)
-	{
-		this.usePredicted = true;
 	}
 
-
-	onOtherPaddleMoved(otherPaddle, x, y)
-	{
-		this.usePredicted = true;
-	}
-
-	onCollision(x, y, prevX, prevY, vx, vy, targets)
-	{
-		if(targets.includes(this.paddle)) {
-			return;
-		}
-		this.usePredicted = true;
-	}
-*/
 	onPositionPredicted(x, y, prevX, prevY, vx, vy, targets)
 	{
-		// if(!this.usePredicted) {
-		// 	return;
-		// }
-
 		if(isWithinRange(this.paddle.sprite.x, prevX, x)) {
 			// if(!isWithinRange(this.paddle.sprite.y + this.paddle.sprite.height/2, y - CONFIG.paddle.speed, y + CONFIG.paddle.speed)) {
 				// Only take first match of a frame.

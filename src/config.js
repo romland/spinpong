@@ -145,7 +145,6 @@ const POWERUPTYPES = {
             { x : 256, y : 209 },
             { x : 0,   y : 209 },
         ],
-        // TODO: Need support for timer and undoEffect
         effect: (lastPaddle, ball) => {
             if(lastPaddle) {
                 lastPaddle.resizeMiddleSegment(2);
@@ -154,7 +153,52 @@ const POWERUPTYPES = {
             }
             return null;
         }
-    }
+    },
+    "smaller-paddle" : {
+        text: "SMALLER",
+        graphic: './assets/powerup01-256x209.png',
+        width: 256,
+        height: 209,
+        scale : 0.2,
+        vertices: [
+            { x : 0,   y : 0   },
+            { x : 256, y : 0   },
+            { x : 256, y : 209 },
+            { x : 0,   y : 209 },
+        ],
+        effect: (lastPaddle, ball) => {
+            if(lastPaddle) {
+                lastPaddle.resizeMiddleSegment(0.8);
+            } else {
+                console.warn("smaller-paddle: no lastPaddle");
+            }
+            return null;
+        }
+    },
+    "reset" : {
+        text: "RESET",
+        graphic: './assets/powerup01-256x209.png',
+        width: 256,
+        height: 209,
+        scale : 0.2,
+        vertices: [
+            { x : 0,   y : 0   },
+            { x : 256, y : 0   },
+            { x : 256, y : 209 },
+            { x : 0,   y : 209 },
+        ],
+        effect: (lastPaddle, ball) => {
+            return {
+                newVelocity: {
+                    x : 2,
+                    y : 2,
+                },
+                newSpin : 0,
+            }
+        }
+    },
+
+
 }
 
 export { CONFIG, PIXICONFIG, BRICKTYPES, POWERUPTYPES, DEFAULT_KEYBOARD };
