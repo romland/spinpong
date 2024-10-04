@@ -129,7 +129,7 @@ export default class PowerUp extends Eventable
     }
 
 
-    move(keyboard)
+    update(keyboard)
     {
     }
 }

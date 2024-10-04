@@ -87,10 +87,10 @@ export default class BrickSet
     }
 
 
-    move(keyboard)
+    update(keyboard)
     {
         for (let brick of this.bricks) {
-            brick.move(keyboard);
+            brick.update(keyboard);
         }
     }
 }

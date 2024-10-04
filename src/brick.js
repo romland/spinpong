@@ -68,7 +68,7 @@ export default class Brick extends Eventable
     }
 
 
-    move(keyboard)
+    update(keyboard)
     {
         if(this.growing) {
             if (this.sprite.scale.x < this.originalScale.x && this.sprite.scale.y < this.originalScale.y) {

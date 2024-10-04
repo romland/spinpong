@@ -134,7 +134,7 @@ export default class Ball extends Eventable
         };
     }
 
-    move(keyboard, gameObjects)
+    update(keyboard, gameObjects)
     {
         if(this.isDead()) {
             return;

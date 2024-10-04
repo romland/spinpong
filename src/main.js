@@ -88,16 +88,16 @@ class Game
 				if (gameObjects[i].isDead()) {
 					gameObjects.splice(i, 1);
 				} else {
-					gameObjects[i].move(keyboard);
+					gameObjects[i].update(keyboard);
 				}
 			}
 			
-			this.playerLeft.move(keyboard);
-			this.playerRight.move(keyboard);
+			this.playerLeft.update(keyboard);
+			this.playerRight.update(keyboard);
 			
-			this.ball.move(keyboard, gameObjects);
+			this.ball.update(keyboard, gameObjects);
 
-			this.fct.move(delta)
+			this.fct.update(delta)
 
 			this.updateDebugText();
 			this.frameCount++;

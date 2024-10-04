@@ -169,7 +169,7 @@ export default class Paddle extends Eventable
         return null;
     }
 
-    move(keyboard) {
+    update(keyboard) {
         let moved = false;
 
         if (keyboard[this.controls.up]) {

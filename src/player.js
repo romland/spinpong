@@ -63,14 +63,14 @@ export default class Player
     {
     }
 
-    move(keyboard)
+    update(keyboard)
     {
         if (this.bot) {
             this.bot.update(this.paddle, GAME.getBall());
         }
-        this.paddle.move(keyboard);
+        this.paddle.update(keyboard);
 
-        this.top.move(keyboard);
-        this.bottom.move(keyboard);
+        this.top.update(keyboard);
+        this.bottom.update(keyboard);
     }
 }

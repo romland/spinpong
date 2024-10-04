@@ -38,7 +38,7 @@ export default class Wall {
         this.app.stage.addChild(this.surface);
     }
     
-    move(keyboard) {
+    update(keyboard) {
         if (keyboard[this.controls.incSurfaceSpeed]) this.surfaceSpeed += CONFIG.walls.surfaceSpeedFactor;
         if (keyboard[this.controls.decSurfaceSpeed]) this.surfaceSpeed -= CONFIG.walls.surfaceSpeedFactor;
         this.updateIndicator();

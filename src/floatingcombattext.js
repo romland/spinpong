@@ -1,6 +1,6 @@
 /*
     Notes on Actions.
-    
+
     https://github.com/srpatel/pixi-actions
     
     Interpolations.linear = (x) => x;
@@ -31,7 +31,7 @@ class FloatingCombatTextManager {
         this.texts.push(fct);
     }
 
-    move(delta) {
+    update(delta) {
         this.texts.forEach((fct) => fct.update(delta));
 
         // Remove dead texts
