@@ -29,6 +29,7 @@ class Game
 
 		this.paused = false;
 		this.frameCount = 0;
+		this.currentLevel = 0;
 
 		this.initKeyboard();
 		await this.initRevolt();
@@ -41,7 +42,7 @@ class Game
 		this.playerRight.setBot(new PredictPositionBot(this.playerRight.getPaddle()));
 
 		this.ball = new Ball(app, this.playerLeft, this.playerRight);
-		this.level = new Level(this.playerRight, this.playerLeft, this.ball);
+		this.level = new Level(this.currentLevel, this.playerRight, this.playerLeft, this.ball);
 
 		app.ticker.add((delta) => { this.update(delta) });
 

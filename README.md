@@ -64,6 +64,7 @@ TODO thoughts:
 - TODO: Need support for TTL and undoEffect in powerUp config. Also:
   "drop-chance"
 - This should work with LG TV remotes, e.g. vertical/horizontal movement to control spin of paddle/wall respectively
+- Temporary (offensive) paddles that can do N hits before disintegrating -- goes together with player's other paddle
 
 BUG:
 - a really fast ball will go 'through' the paddle (need same fix as elsewhere)

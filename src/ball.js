@@ -26,7 +26,7 @@ export default class Ball extends Eventable
             x: CONFIG.ball.initialVel,
             y: CONFIG.ball.initialVel
         };
-        this.spin = 0;
+        this.spin = CONFIG.ball.defaultSpin;
         this.dead = true;
 
         this.sprite.filters = [
@@ -53,7 +53,6 @@ export default class Ball extends Eventable
         this.app.stage.addChild(this.trajectoryGraphics);
 
         this.listeners = {};
-        this.spin = CONFIG.ball.defaultSpin;
 
         this.gameStarted = false;
     }
