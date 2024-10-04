@@ -1,10 +1,9 @@
 import { CONFIG, DEFAULT_KEYBOARD, PIXICONFIG, POWERUPTYPES } from "./config.js";
 import Ball from "./ball.js";
 import Player from "./player.js";
-import BrickSet from "./brickset.js";
+import Level from "./level.js";
 import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
-import PowerUp from "./powerup.js";
 import { FloatingCombatTextManager } from "./floatingcombattext.js"
 
 import { Actions } from './libs/pixi-actions/index.js';
@@ -27,31 +26,14 @@ class Game
 		}
 
 		document.body.appendChild(app.view);
-		
-		await this.initRevolt();
 
-		// Interpolation library
-		// TODO: Don't actually want a separate ticker for it -- this should also pause with pause
-		app.ticker.add((delta) => Actions.tick(delta/60));
-
-		this.fct = new FloatingCombatTextManager();
-
-		// Initialize keyboard
-		const keyboard = {};
-		window.addEventListener('keydown', (e) => {
-			if (e.code === DEFAULT_KEYBOARD.pause) {
-				this.togglePause();
-			}
-			
-			keyboard[e.code] = true;
-		});
-		window.addEventListener('keyup', (e) => {
-			keyboard[e.code] = false;
-		});
-		
 		this.paused = false;
 		this.frameCount = 0;
 
+		this.initKeyboard();
+		await this.initRevolt();
+		this.fct = new FloatingCombatTextManager();
+		
 		this.playerLeft = new Player("left");
 		this.playerLeft.setBot(new FollowBot(this.playerLeft.getPaddle()));
 
@@ -59,82 +41,37 @@ class Game
 		this.playerRight.setBot(new PredictPositionBot(this.playerRight.getPaddle()));
 
 		this.ball = new Ball(app, this.playerLeft, this.playerRight);
-		this.ball.registerListener("onBallLost", (args) => this.onBallLost(...args));
+		this.level = new Level(this.playerRight, this.playerLeft, this.ball);
 
-		let gameObjects = [
-			new BrickSet(app, 300, 200).createFromMatrix(
-				"1 1 111\n" +
-				"111  1 \n" +
-				"1 1 111\n" +
-				""
-			),
-			new PowerUp(app, this.ball, 200,  60, POWERUPTYPES["faster-ball"]),
-			new PowerUp(app, this.ball, 300, 400, POWERUPTYPES["bigger-paddle"]),
-			new PowerUp(app, this.ball, 200, 300, POWERUPTYPES["slower-ball"]),
-		];
+		app.ticker.add((delta) => { this.update(delta) });
 
-		app.ticker.add((delta) => {
-			if (this.paused) {
-				return;
-			}
+		this.level.launchBall(0);
+	}
 
-			this.fx.update();
+	update(delta)
+	{
+		if (this.paused) {
+			return;
+		}
 
-			// if(window.GAME.frameCount === 720) {
-			// 	debugger;
-			// }
+		// if(window.GAME.frameCount === 720) {
+		// 	debugger;
+		// }
 
-			for (let i = gameObjects.length - 1; i >= 0; i--) {
-				if (gameObjects[i].isDead()) {
-					gameObjects.splice(i, 1);
-				} else {
-					gameObjects[i].update(keyboard);
-				}
-			}
-			
-			this.playerLeft.update(keyboard);
-			this.playerRight.update(keyboard);
-			
-			this.ball.update(keyboard, gameObjects);
-
-			this.fct.update(delta)
-
-			this.updateDebugText();
-			this.frameCount++;
-		});
-
-		this.launchBall(0);
+		this.fx.update();
+		Actions.tick(delta/60)
+		this.level.update(this.keyboard);
+		this.playerLeft.update(this.keyboard);
+		this.playerRight.update(this.keyboard);
+		this.ball.update(this.keyboard, this.level.getGameObjects());
+		this.fct.update(delta)
+		this.updateDebugText();
+		this.frameCount++;
 	}
 
 	cleanUp()
 	{
 		// TODO: implement cleanUp() in all game objects, call them all from here...
-	}
-
-	onBallLost(ballX, ballY)
-	{
-		// TODO: Score keeping
-
-		console.log("Ball lost...");
-		this.launchBall(1000);
-	}
-
-	launchBall(wait = 1000)
-	{
-		this.ball.sprite.x = (this.app.view.width / 2) - CONFIG.ball.radius;
-		this.ball.sprite.y = (this.app.view.height / 2) - CONFIG.ball.radius;
-		this.ball.velocity = {
-			x: CONFIG.ball.initialVel,
-			y: CONFIG.ball.initialVel
-		};
-		this.ball.spin = CONFIG.ball.defaultSpin;
-		// TODO: reset everything else too (paddles/walls/bots)
-
-		setTimeout(() => {
-			console.log("Launching ball...");
-			this.ball.dead = false;
-			this.ball.gameStarted = false;
-		}, wait);
 	}
 
 	togglePause() {
@@ -159,6 +96,23 @@ class Game
 	getActions()
 	{
 		return Actions;
+	}
+
+	initKeyboard()
+	{
+		this.keyboard = {};
+
+		window.addEventListener('keydown', (e) => {
+			if (e.code === DEFAULT_KEYBOARD.pause) {
+				this.togglePause();
+			}
+			
+			this.keyboard[e.code] = true;
+		});
+
+		window.addEventListener('keyup', (e) => {
+			this.keyboard[e.code] = false;
+		});
 	}
 
 	async initRevolt()
