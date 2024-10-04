@@ -3,12 +3,11 @@ import isWithinRange from "./../utils.js";
 
 export default class PredictPositionBot
 {
-	constructor(paddle, otherPaddle, ball)
+	constructor(paddle)
 	{
 		this.paddle = paddle;
 		this.targetY = PIXICONFIG.height / 2;
 		this.lastUsedFrame = -1;		// Last frame we moved
-		ball.registerListener("onPositionPredicted", (args) => this.onPositionPredicted(...args));
 	}
 
 	onPositionPredicted(x, y, prevX, prevY, vx, vy, targets)
@@ -27,6 +26,11 @@ export default class PredictPositionBot
 	
 	update(paddle, ball)
 	{
+		if(!this.ball) {
+			ball.registerListener("onPositionPredicted", (args) => this.onPositionPredicted(...args));
+			this.ball = ball;
+		}
+
 		if(Math.abs(this.targetY - paddle.sprite.y) <= CONFIG.paddle.speed) {
 			paddle.setPosition(paddle.sprite.x, this.targetY);
 		} else {

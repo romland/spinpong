@@ -3,16 +3,16 @@ import Eventable from "./eventable.js";
 
 export default class Ball extends Eventable
 {
-    constructor(app, paddleLeft, paddleRight, topWall, bottomWall, rightTopWall, rightBottomWall) {
+    constructor(app, leftPlayer, rightPlayer) {
         super();
 
         this.app = app;
-        this.paddleLeft = paddleLeft;
-        this.paddleRight = paddleRight;
-        this.topWall = topWall;
-        this.bottomWall = bottomWall;
-        this.rightTopWall = rightTopWall;
-        this.rightBottomWall = rightBottomWall;
+        this.paddleLeft = leftPlayer.getPaddle();
+        this.paddleRight = rightPlayer.getPaddle();
+        this.topWall = leftPlayer.getTop();
+        this.bottomWall = leftPlayer.getBottom();
+        this.rightTopWall = rightPlayer.getTop();
+        this.rightBottomWall = rightPlayer.getBottom();
 
         this.sprite = PIXI.Sprite.from('./assets/ball01-mirrored.png');
         this.sprite.anchor.set(0.5,0.5);

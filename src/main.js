@@ -1,7 +1,6 @@
 import { CONFIG, DEFAULT_KEYBOARD, PIXICONFIG, POWERUPTYPES } from "./config.js";
 import Ball from "./ball.js";
-import Paddle from "./paddle.js";
-import Wall from "./wall.js";
+import Player from "./player.js";
 import BrickSet from "./brickset.js";
 import FollowBot from "./bots/followbot.js";
 import PredictPositionBot from "./bots/PredictPositionBot.js";
@@ -15,7 +14,6 @@ class Game
 	constructor() {
 		this.init();
 	}
-
 
 	async init()
 	{
@@ -51,27 +49,18 @@ class Game
 			keyboard[e.code] = false;
 		});
 		
-		
 		this.paused = false;
 		this.frameCount = 0;
 
-		// Player 1
-		this.paddleLeft = new Paddle(app, CONFIG.paddle.offsetX, app.view.height / 2, DEFAULT_KEYBOARD.leftPlayer.paddle);
-		this.topWall = new Wall(app, 0, 0, (app.view.width / 2) - 3, DEFAULT_KEYBOARD.leftPlayer.walls.top);
-		this.bottomWall = new Wall(app, 0, app.view.height - CONFIG.walls.height, (app.view.width / 2) - 3, DEFAULT_KEYBOARD.leftPlayer.walls.bottom);
+		this.playerLeft = new Player("left");
+		this.playerLeft.setBot(new FollowBot(this.playerLeft.getPaddle()));
 
-		// Player 2
-		this.paddleRight = new Paddle(app, app.view.width - CONFIG.paddle.offsetX - CONFIG.paddle.width, app.view.height / 2, DEFAULT_KEYBOARD.rightPlayer.paddle);
-		this.rightTopWall = new Wall(app, (app.view.width / 2) + 3, 0, app.view.width / 2, DEFAULT_KEYBOARD.rightPlayer.walls.top);
-		this.rightBottomWall = new Wall(app, (app.view.width / 2) + 3, app.view.height - CONFIG.walls.height, app.view.width / 2, DEFAULT_KEYBOARD.rightPlayer.walls.bottom);
-		
-		this.ball = new Ball(app, this.paddleLeft, this.paddleRight, this.topWall, this.bottomWall, this.rightTopWall, this.rightBottomWall);
+		this.playerRight = new Player("right");
+		this.playerRight.setBot(new PredictPositionBot(this.playerRight.getPaddle()));
+
+		this.ball = new Ball(app, this.playerLeft, this.playerRight);
 		this.ball.registerListener("onBallLost", (args) => this.onBallLost(...args));
 
-		
-		let leftBot = new FollowBot(this.paddleLeft);
-		let rightBot = new PredictPositionBot(this.paddleRight, this.paddleLeft, this.ball);
-		
 		let gameObjects = [
 			new BrickSet(app, 300, 200).createFromMatrix(
 				"1 1 111\n" +
@@ -103,21 +92,8 @@ class Game
 				}
 			}
 			
-			if (leftBot) {
-				leftBot.update(this.paddleLeft, this.ball);
-			}
-			this.paddleLeft.move(keyboard);
-			
-			if (rightBot) {
-				rightBot.update(this.paddleRight, this.ball);
-			}
-			this.paddleRight.move(keyboard);
-			
-			this.topWall.move(keyboard);
-			this.bottomWall.move(keyboard);
-			
-			this.rightTopWall.move(keyboard);
-			this.rightBottomWall.move(keyboard);
+			this.playerLeft.move(keyboard);
+			this.playerRight.move(keyboard);
 			
 			this.ball.move(keyboard, gameObjects);
 
@@ -129,7 +105,6 @@ class Game
 
 		this.launchBall(0);
 	}
-
 
 	cleanUp()
 	{
@@ -218,9 +193,9 @@ class Game
 		<tr>
 			<td width=33%>
 				<strong>Left bat</strong><br>
-				position: ${Math.round(this.paddleLeft.sprite.x)}, ${Math.round(this.paddleLeft.sprite.y)}<br>
-				bat surface: ${this.paddleLeft.surfaceSpeed.toFixed(5)}<br>
-				wall surfaces: ${this.topWall.surfaceSpeed.toFixed(5)}<br>
+				position: ${Math.round(this.playerLeft.getPaddle().sprite.x)}, ${Math.round(this.playerLeft.getPaddle().sprite.y)}<br>
+				bat surface: ${this.playerLeft.getPaddle().surfaceSpeed.toFixed(5)}<br>
+				wall surfaces: ${this.playerLeft.getTop().surfaceSpeed.toFixed(5)}<br>
 			</td>
 			<td width=33%>
 				<strong>Ball</strong><br>
@@ -233,9 +208,9 @@ class Game
 			</td>
 			<td width=33%>
 				<strong>Right bat</strong><br>
-				position: ${Math.round(this.paddleRight.sprite.x)}, ${Math.round(this.paddleRight.sprite.y)}<br>
-				bat surface: ${this.paddleRight.surfaceSpeed.toFixed(5)}<br>
-				wall surfaces: ${this.rightTopWall.surfaceSpeed.toFixed(5)}<br>
+				position: ${Math.round(this.playerRight.getPaddle().sprite.x)}, ${Math.round(this.playerRight.getPaddle().sprite.y)}<br>
+				bat surface: ${this.playerRight.getPaddle().surfaceSpeed.toFixed(5)}<br>
+				wall surfaces: ${this.playerRight.getTop().surfaceSpeed.toFixed(5)}<br>
 			</td>
 		</tr>
 	</table>

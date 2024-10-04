@@ -39,6 +39,7 @@ IDEAS:
   to other side (like a temporary block-breaker (Arkanoid))
 
 TODO thoughts:
+- To get more variety, we'll probably need to make bats and walls ovals
 - perhaps reset surface speeds after each collision? will it make it harder or easier?
 - round spin/speeds to integer between 0-10? show that number somewhere (next to wall/bats?) so you can easily counter?
 - maybe hold key for spin, and releasing key resets it back to 0 spin
@@ -62,6 +63,7 @@ TODO thoughts:
 - on "death": lightning from where ball slipped through to the bat -- and bat blows up
 - TODO: Need support for TTL and undoEffect in powerUp config. Also:
   "drop-chance"
+- This should work with LG TV remotes, e.g. vertical/horizontal movement to control spin of paddle/wall respectively
 
 BUG:
 - a really fast ball will go 'through' the paddle (need same fix as elsewhere)
